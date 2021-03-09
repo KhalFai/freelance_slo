@@ -1,0 +1,169 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<script src="/bootstrap/jquery/jquery.min.js"></script>
+		<script src="/bootstrap/popper/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/css/custom-styles.css">
+
+        <title>FreelanceSLO - Admin - Opozorjeni delavci</title>
+
+        <script src="/clientside_js/custom-validation.js"></script>
+        <script src="/clientside_js/postData.js"></script>
+        <script src="/clientside_js/admin-opozorjeni-delavci.js"></script>
+    </head>
+    <body class="gf-admin-platform-background">
+
+      <nav class="navbar fixed-top navbar-expand-md navbar-light gf-header-admin shadow-sm">	
+        <a class="navbar-brand text-light" href="/index.html">FreelanceSLO</a>
+  
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
+            <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/potrjevanje-admin">Administratorji</a>
+            <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/neprimerna-dela">Dela</a>
+            <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/prijavljeni-delavci">Delavci</a>
+            <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/prijavljena-podjetja">Podjetja</a>
+            
+            <a class="nav-item nav-link text-light" href="/admin/nav/nastavitve"><img class="gf-nav-icon" src="/icon/settings.svg" alt="Nastavitve"><span> Nastavitve</span></a>
+            <a class="nav-item nav-link text-light" href="/admin/acc/logout"><img class="gf-nav-icon" src="/icon/logout.svg" alt="Odjava"><span> Odjava</span></a>
+          </div>
+      </nav>
+  
+
+        <div class="alert alert-primary shadow-lg d-none" id="status" role="alert">
+            <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+            <label id="status-text">asdf</label>
+        </div>
+
+        
+        <main role="main">
+        <div class="container">
+        <%if (pagedata.prijavljenidelavci.length == 0) {%>
+            <div class="card mt-3 shadow-sm">
+              <div class="alert alert-light" role="alert">
+                <h4 class="alert-heading">Bravo!</h4>
+                <hr>
+                <p>Trenutno ni zahtev za prijavo delavcev. Osvežite stran za ponoven pregled</p>
+              </div>
+          </div>
+          <%} else for(delavec of pagedata.prijavljenidelavci){%>
+        <div id="prijava-<%=delavec.iddelavca%>" class="card mt-3 shadow-sm mb-4">
+        <div class="card-body">
+
+        <h5 class="card-title" id="delavec-ime"><%=delavec.ime%> <%=delavec.priimek%></h1>
+        <h6 class="card-subtitle" id="delavec-kontakt"><%=delavec.eposta%>, <%=delavec.telefon%></h2>
+        <hr>
+        <p class="card-text" id="delavec-kratekopis"><%=delavec.kratekopis%></p>
+        <hr>
+        <div class="row">
+        <div class="col-sm">
+        <%if(delavec.datumrojstva != "Invalid date") {%>
+        <p class="card-text text-muted delo-details" id="delavec-datumrojstva">Datum rojstva: <%=delavec.datumrojstva%></p>
+        <%} else {%>
+          <p class="card-text text-muted delo-details" id="delavec-datumrojstva">Podatka ni.</p> 
+        <%}%>
+        <p class="card-text text-muted delo-details" id="delavec-potrjen">
+        <%if (delavec.epostapotrjena == true) {%>
+            E-poštni naslov računa je potrjen, gre za človeškega uporabnika.
+        <%} else {%>
+            E-poštni naslov računa ni potrjen, lahko, da gre za robota.
+        <% } %>
+        </p>
+        </div>
+        <div class="col-sm">
+            <p class="card-text text-muted delo-details">Jeziki: <%=delavec.jeziki.toString()%></p>
+            <p class="card-text text-muted delo-details">Spretnosti: <%=delavec.spretnosti.toString()%></p>
+        </div>
+        </div>
+        <hr>
+        <%if (delavec.odgovor_delavca != undefined) {%>
+            <div class="card-header bg-dark text-light">Delavec se je odzval na prijavo:</div>
+            <p class="list-group-item text-dark"><%=delavec.odgovor_delavca %></p>
+        <%}%>
+        <hr>
+
+        <button class="btn gf-admin-btn w-100 mt-2 mb-2" type="button" data-toggle="collapse" data-target="#collapseIzobrazba" aria-expanded="false" aria-controls="collapseIzobrazba">Izobrazba...</button>
+
+        <div id="collapseIzobrazba" class="collapse">
+            <% for(izobrazba of delavec.izobrazba) {%>    
+                <div class="card mt-3 shadow-sm mb-3">
+                    <div class="card-body">
+                      <h5 class="card-title"><%=izobrazba.nazivIzobrazbe%></h5>
+                      <h6 class="card-subtitle mb-2 text-muted"><%=izobrazba.ustanova%></h6>
+                      <h6 class="card-subtitle mb-2 text-muted"><%=izobrazba.nivoizobrazbe%></h6>
+                      <p class="card-text"><%=izobrazba.opis%></p>
+                      <p class="card-text"><%=izobrazba.datumzacetka%> - <%=izobrazba.datumkonca%></p>
+                    </div>
+                  </div>
+            <% } %>
+        </div>
+    
+    <button class="btn gf-admin-btn w-100 mt-2 mb-2" type="button" data-toggle="collapse" data-target="#collapseIzkusnje" aria-expanded="false" aria-controls="collapseIzkusnje">Delovne izkušnje...</button>
+
+    <div id="collapseIzkusnje" class="collapse">
+    <% for(izkusnja of delavec.delovne_izkusnje) {%>
+        <div class="card mt-3 shadow-sm mb-3" id="trenutne-izkusnje">
+            <div class="card-body">
+            <h5 class="card-title"><%=izkusnja.nazivpodjetja %></h5>
+            <h6 class="card-subtitle mb-2 text-muted"><%=izkusnja.imemesta %></h6>
+            <p class="card-text"><%=izkusnja.opisdela%></p>
+            <p class="card-text"><%=izkusnja.datumzacetka %> - <%=izkusnja.datumkonca %></p>
+        </div>
+    </div>
+    <% } %>
+    </div>
+    
+        <hr>
+        <form>
+            <%if (delavec.odgovor_delavca == undefined) {%>
+            <label for="besedilo-prijave" for="prijava-razlaga-<%=delavec.iddelavca%>">Besedilo odziva:</label>
+            <textarea class="form-control mb-3" name="prijava-razlaga-<%=delavec.iddelavca%>" id="prijava-razlaga-<%=delavec.iddelavca%>" type="text"></textarea>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>" onclick="potrdiPrijavo(this)">Potrdi prijavo</button>
+            <%}%>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>"onclick="dokoncnoPotrdi(this)">Dokončno blokiraj delavca</button>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>" onclick="opustiPrijavo(this)">Odstrani prijavo</button>
+            <a class="btn gf-admin-btn mr-2 mb-2" data-toggle="collapse" href="#collapseOdzive<%=delavec.iddelavca%>" role="button" aria-expanded="false" aria-controls="collapseOdzive<%=delavec.iddelavca%>">Pokaži odzive..</a>
+        </form>
+
+        <div class="collapse" id="collapseOdzive<%=delavec.iddelavca%>">
+            <%for (prijava of delavec.prijave) {%>
+                <div class="card mt-2 shadow-sm mb-2">
+                <div class="card-body">
+                <h5 class="card-title"><%=prijava.naziv%> <%=prijava.ime%></h5>
+                <h6 class="text-muted card-subtitle mb-2">Interni id: <%=prijava.idpodjetja%></h6>
+                <p class="card-text"><%=prijava.besedilo_prijave%></p>
+                </div>
+                </div>
+                <%}%>
+        </div>
+        </div>
+        </div>
+        <%}%>
+
+        <nav>
+            <ul class="pagination justify-content-center mt-3">
+              <%if (pagedata.page > 1) {%>
+              <li class="page-item">
+                <a class="page-link text-dark" href="/admin/nav/prijavljeni-delavci/?page=<%=pagedata.page - 1%>" aria-label="Previous">
+                  <span>Prejšnja stran</span>
+                </a>
+              </li>
+              <%}%>
+              <%if (pagedata.prijavljenidelavci.length == 20) {%>
+              <li class="page-item">
+                <a class="page-link text-dark" href="/admin/nav/prijavljeni-delavci/?page=<%=parseInt(pagedata.page) + 1%>" aria-label="Next">
+                  <span>Naslednja stran</span>
+                </a>
+              </li>
+              <%}%>
+            </ul>
+          </nav>
+
+        </div>
+        </main>
+    </body>
+</html>

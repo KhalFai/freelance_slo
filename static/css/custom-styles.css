@@ -1,0 +1,245 @@
+main {
+    min-height:100vh;
+    padding-top:70px;
+}
+
+.gf-frontpage-image {
+    background-size:cover;
+    background-position: center;
+    transition: 0.3s;
+}
+
+.gf-frontpage-ozadje {
+    background: beige;
+}
+
+.gf-frontpage-delavci {
+    box-shadow:  rgba(25,71,46, 0.7) 0 0 0 60vh inset;
+    border-radius:50px;
+}
+
+.gf-frontpage-podjetja {
+    box-shadow:  rgba(8,68,92, 0.8) 0 0 0 60vh inset;
+    border-radius:50px;
+}
+
+.gf-frontpage-delavci:hover {
+    box-shadow:  rgba(25,71,46, 0.6) 0 0 0 70vh inset;
+}
+
+.gf-frontpage-podjetja:hover {
+    box-shadow:  rgba(8,68,92, 0.7) 0 0 0 60vh inset;
+}
+
+@media (orientation: landscape) {
+    .gf-frontpage-image {
+        height:80vh;
+        margin:30px;
+    }
+  }
+  
+@media (orientation: portrait) {
+    .gf-frontpage-image {
+        height:auto;
+        margin:10px;
+    }
+}
+
+@media only screen and (max-device-width: 750px) {
+    .gf-frontpage-image {
+        height:auto;
+        margin:10px;
+    }
+}
+
+@media only screen and (min-device-width: 750px) {
+    .gf-frontpage-image {
+        height:80vh;
+        margin:30px;
+    }
+}
+
+.gf-delavci-form-background {
+    background-image:url('/images/form-backgrounds/delavci.jpg');
+    box-shadow:  rgba(25,71,46, 0.6) 0 0 0 100vh inset;
+    background-size:cover;
+    background-position: center;
+
+    min-height:100vh;
+}
+
+.gf-admin-form-background {
+    background-image:url('/images/form-backgrounds/admini.jpg');
+    box-shadow:  rgba(162, 122, 83, 0.6) 0 0 0 100vh inset;
+    background-size:cover;
+    background-position: top;
+
+    min-height:100vh;
+}
+
+.gf-admin-platform-background {
+    background: linear-gradient(180deg, rgba(203,107,11,1) 0%, rgba(236,136,14,1) 100%);
+    background-size:cover;
+    background-position: center;
+    min-height:100vh;
+}
+
+
+.gf-delavci-platform-background {
+    background: linear-gradient(180deg, rgba(82,133,45,1) 21%, rgba(148,199,69,1) 62%);
+    background-size:cover;
+    background-position: center;
+    min-height:100vh;
+}
+
+.gf-podjetja-platform-background {
+    background: linear-gradient(180deg, rgba(0,107,189,1) 35%, rgba(125,217,255,1) 100%);
+    background-size:cover;
+    background-position: center;
+    min-height:100vh;
+}
+
+.gf-podjetja-form-background {
+    background-image:url('/images/form-backgrounds/podjetja.jpg');
+    box-shadow:  rgba(8,68,92, 0.8) 0 0 0 100vh inset;
+    background-size:cover;
+    background-position: right;
+
+    min-height:100vh;
+}
+
+.gf-napaka-background {
+    background-image:url('/images/form-backgrounds/napaka.jpg');
+    box-shadow:  rgba(179,33,7, 0.8) 0 0 0 100vh inset;
+    background-size:cover;
+    background-position: right;
+
+    min-height:100vh;
+}
+
+.gf-header-podjetja {
+    background-color:#006bbd;
+}
+
+.collapsing {
+    -webkit-transition: none !important;
+    transition: none !important;
+    display: none !important;
+}
+
+.gf-admin-btn {
+    background-color:#f7912b;
+    color:white;
+}
+
+.gf-admin-btn-dark {
+    background-color:#b45d06;
+    color:white;
+}
+
+.gf-nav-icon {
+    width:20px;
+    height:20px;
+}
+
+.gf-empty-icon {
+    width:150px;
+    height:150px;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
+} 
+
+.navbar-toggler { 
+    border:none;
+}
+
+.gf-admin-btn:hover {
+    background-color:#cb6b0b;
+    color:white;
+}
+
+.gf-admin-btn:focus {
+    background-color:#7a420a !important;
+    color:white !important;
+}
+
+.gf-admin-btn:active {
+    background-color:#7a420a !important;
+    color:white !important;
+}
+
+.gf-admin-btn.active {
+    background-color:#bd660f !important;
+    color:white !important;
+    border:none !important;
+}
+
+
+
+.gf-admin-geslo {
+    color:#cb6b0b;
+}
+
+.gf-header-delavci {
+    background-color:#52852d;
+}
+
+.gf-header-admin {
+    background-color:#cb6b0b;
+}
+
+.gf-header-napaka {
+    background-color:#b32107;
+}
+
+
+.gf-link-color {
+    color:white;
+}
+
+.gf-link-color:hover {
+    color:white;
+}
+
+
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+
+
+@keyframes fadeout {
+    from {
+        opacity:1;
+    }
+    to {
+        opacity:0;
+    }
+}
+  
+
+.fadein {
+    animation-name: fadein;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+  }
+
+  .fadeout {
+    animation-name: fadeout;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+  }
+
+  .delo-header {
+    font-size:24px;
+  }
+
+  .delo-details {
+      font-size:14px;
+  }

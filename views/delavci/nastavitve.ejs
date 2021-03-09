@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<script src="/bootstrap/jquery/jquery.min.js"></script>
+		<script src="/bootstrap/popper/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/css/custom-styles.css">
+
+        <script src="/clientside_js/postData.js"></script>
+        <script src="/clientside_js/delavci-nastavitve.js"></script>
+        <script src="/clientside_js/delavci-blokiranje-pritozba.js"></script>
+        <script src="/clientside_js/custom-validation.js"></script>
+    </head>
+    <body class="gf-delavci-platform-background">
+
+        <nav class="navbar fixed-top navbar-expand-md navbar-light gf-header-delavci shadow-sm">	
+            <a class="navbar-brand text-light" href="/index.html">FreelanceSLO</a>
+
+            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="justify-content-end navbar-collapse collapse" id="navbarCollapse">
+                <a class="nav-item nav-link text-light"  href="/delavci/nav/feed/?page=1""><img class="gf-nav-icon" src="/icon/feed.svg" alt="Dela"><span> Dela</span></a>
+                <a class="nav-item nav-link text-light" href="/delavci/nav/nastavitve"><img class="gf-nav-icon" src="/icon/settings.svg" alt="Nastavitve"><span> Nastavitve</span></a>
+                <a class="nav-item nav-link text-light" href="/delavci/acc/logout"><img class="gf-nav-icon" src="/icon/logout.svg" alt="Odjava"><span> Odjava</span></a>
+              </div>
+        </nav>
+
+        <main role="main">
+        <div class="container">
+        
+        <div class="alert alert-primary d-none shadow-lg" id="status" role="alert">
+            <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+            <label id="status-text"></label>
+        </div>
+        
+        <% if(userdata.opozorjen == 1) {%>
+        <!-- V primeru blokiranja-->
+        <div id="opraviciloform" class="card bg-danger">
+        <div class="card-body shadow-lg">
+        <h1 class="text-white">Vaš račun je bil začasno blokiran zaradi prijave uporabnika.</h1>
+        <hr>
+
+        <div class="card-header bg-light text-dark">Administrator je priložil razlago:</div>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item text-dark"><%=userdata.admin_pojasnilo%></li>
+        </ul>
+
+        <%if (userdata.odgovor_delavca == null) {%>
+        <form>
+            <div class="card-header bg-light text-dark">Če se vam prijava ne zdi pravična, lahko spodaj vpišete razlog in pošljete pritožbo:</div>
+            <ul class="list-group list-group-flush bg-white">
+                <div class="form-group">
+                    <textarea placeholder="Prijava se mi ne zdi pravična, saj..." class="form-control gf-to-validate" onchange="validateApology(this)" name="opravicilo" id="opravicilo" type="text"></textarea><br>
+                    <div class="ml-2 mb-3"><small class="text-muted text-light">Besedilo lahko vsebuje samo črke, številke in ločila.</small></div>
+                    <input type="button" class="btn btn-danger ml-2" onclick="posljiOpravicilo(this);" value="Pošlji">
+                </div>
+            </ul>
+        </form>
+
+        <%} else {%>
+        <div class="card-header bg-light text-dark">Odzvali ste se s sledečim odgovorom:</div>
+        <ul class="list-group list-group-flush mb-4">
+            <li class="list-group-item text-dark"><%=userdata.odgovor_delavca%></li>
+        </ul>
+        <%}%>
+    </div>
+    </div>
+        <%}%>
+
+         <!-- Potrditvene zadevščine-->
+        <% if(!userdata.epostapotrjena) {%>
+        <div class="card mt-4">
+        <div class="card-body shadow-lg">
+        <h1>Potrditev e-pošte:</h1>
+        <hr>
+        
+        <div class="form-group" id="potrditevform">
+            <label for="potrditvenakoda">Potrditvena koda (poslana na e-poštni naslov vašega računa):</label>
+            <input type="text" class="form-control gf-to-validate" onblur="validateEmailCode(this)" id="potrditvenakoda" name="potrditvenakoda">
+            <small class="text-muted text-light">Potrditvena koda vsebuje samo števila.</small>
+        </div>
+        <button class="btn btn-success m-2" onClick="posljiKodo()">Pošlji</button>
+        <button class="btn btn-success m-2" onclick="getData('/delavci/acc/eposta-spet',{})">Ponovno pošlji e-pošto.</button>
+
+        </div>
+        </div>
+        <% } %>
+    </div>
+    <div class="container">
+
+        <!-- Lastnosti računa-->
+        <div class="card mt-4">
+        <div class="card-body shadow-lg">
+        <form id="lastnostiform">
+        <div class="form-group">
+            <h2>Lastnosti računa:</h2>
+            <hr>
+            <div class="form-group">
+
+            <div class="form-row">
+            
+            <div class="col">
+            <label for="name">Ime:</label>
+            <input class="form-control gf-to-validate" onblur="validateName(this)" id="ime" name="ime" type="text" placeholder="Janez" value="<%=userdata.ime %>">
+            </div>
+            
+            <div class="col">
+            <label for="priimek">Priimek:</label>
+            <input class="form-control gf-to-validate" onblur="validateName(this)" id="priimek" name="priimek" type="text" placeholder="Gradnik" value="<%=userdata.priimek %>">
+            </div>
+            </div>
+            </div>
+            <small class="text-muted text-light">Ime in priimek lahko vsebujeta samo črke, morata imeti tudi veliko začetnici.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="datumrojstva">Datum rojstva:</label>
+            <input class="form-control gf-to-validate" id="datumrojstva" onblur="validateBirthDate(this)" name="datumrojstva" type="date" value="<%=userdata.datumrojstva%>">
+            <small class="text-muted text-light">Datum rojstva mora biti manjši od trenutnega datuma.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="telefon">Telefon:</label>
+            <input class="form-control gf-to-validate" onblur="validatePhoneNumber(this)" id="telefon" name="telefon" type="tel" placeholder="000-000-000" value="<%=userdata.telefon%>">
+            <small class="text-muted text-light">Upoštevajte zgornjo obliko.</small>
+        </div>
+
+        <div class="form-group">
+        <label for="eposta">Epošta:</label>
+        <input name="eposta" class="form-control gf-to-validate" type="text" value="<%=userdata.eposta%>" readonly>
+        <small class="text-muted text-light">E-poštnega naslova računa ni možno spreminjati.</small>
+        </div>
+
+        <input type="button" class="btn btn-success" onclick="posodobiInfo()" value="Posodobi">
+        </form>
+        </div>
+        </div>
+
+        <div class="card mt-4">
+        <div class="card-body shadow-lg">
+        
+        <h2>Življenjepis:</h2>
+        <hr>
+
+        <div id="kratekopisform" class="form-group">
+            <label for="kratekopis">Kratek opis:</label>
+            <textarea oninput="kratekopisCounter()" name="kratekopis" id="kratekopis" class="form-control" type="text" placeholder="Na kratko se opišite..."><%=userdata.kratekopis%></textarea>
+            <small id="kratekopis-dolzina" class="text-muted text-light"></small><br>
+            <small class="text-muted text-light">Besedilo lahko vsebuje samo črke, številke in posebne znake.</small>
+        </div>
+        <button onClick="posljiOpis()" class="btn btn-success">Pošlji</button>
+        <hr>
+
+        <div id="spretnostiform" class="form-group">
+        <h4 class="text-muted">Spretnosti:</h4>
+        <input type="text" name="isci-spretnost" id="isci-spretnost" class="form-control" placeholder="SQL, Grafično oblikovanje..." oninput="isciSpretnost(this)">
+        <div id="data-spretnosti" class="mt-2">
+        </div>
+        <small class="text-muted text-light">V iskalnik vpišite ime ali začetek imena iskane spretnosti.</small>
+        <div id="trenutne-spretnosti" class="mt-3">
+        <% for(spretnost of userdata.spretnostiUporabnika){ %>
+            <button class="btn btn-success m-1" id="spretnost-<%=spretnost.idspretnosti%>" onClick="izbrisiSpretnost(this)"><%=spretnost.naziv%> <span aria-hidden="true">&times;</span></button>
+        <%}%>
+        </div>
+        </div>
+
+        <hr>
+        <div id="jezikiform" class="form-group">
+        <h4 class="text-muted">Jeziki:</h4>
+        <input placeholder="Angleščina, Slovenščina..." class="form-control" name="isci-jezik" id="isci-jezik" oninput="isciJezik(this)">
+        <div class="mt-2" id="data-jezik">
+        </div>
+        <small class="text-muted text-light">V iskalnik vpišite ime ali začetek imena iskanega jezika.</small>
+        <div class="mt-3" id="trenutne-jezik">
+        <% for(jezik of userdata.jezikiUporabnika){ %>
+            <button class="btn btn-success m-1" id="jezik-<%=jezik.idjezika%>" onClick="izbrisiJezik(this)"><%=jezik.naziv%> <span aria-hidden="true">&times;</span></button>
+        <%}%>
+        </div>
+        </div>
+
+        <hr>
+        <h4 class="text-muted">Izobraževanja in tečaji:</h4><br>
+
+        <div class="modal fade" id="izobrazbaModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <div id="izobrazevanjaform" class="form-group modal-content">
+                <div class="modal-header mb-2">
+                    <h5 class="modal-title">Dodajte izobraževanje</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                <div class="form-row mb-3">
+                    <div class="col">
+                    <label>Izobrazba:</label>
+                    <input placeholder="Gimnazijec" onblur="validateApology(this)" class="form-control" id="nazivizobrazbe" type="text">
+                </div>
+                    <div class="col">
+                    <label>Ustanova:</label>
+                    <input onblur="validateApology(this)" placeholder="Gimnazija LJ" class="form-control" id="ustanovaizobrazbe" type="text">
+                    </div>
+                </div>  
+                <div class="form-row mb-3">
+                    <div class="col">
+                    <label>Nivo izobrazbe:</label>
+                    <select class="form-control" name="nivoizobrazbe" id="nivoizobrazbe">
+                        <% for(nivoizobrazbe of pagedata.nivoizobrazbe) {%>
+                            <option value="<%=nivoizobrazbe.idnivoja %>"><%=nivoizobrazbe.naziv%></option>
+                        <%}%>
+                    </select>
+                </div>
+                </div>
+                <div class="form-row mb-3">
+                    <div class="col">
+                        <label>Opis:</label>
+                        <textarea oninput="izobrazbaCounter()" placeholder="V času šolanja sem se naučil..." class="form-control" id="opisizobrazbe" name="opisizobrazbe" type="text"></textarea>
+                        <small class="text-muted text-light" id="opisizobrazbe-length"></small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label>Začetek izobraževanja:</label>
+                    <input class="form-control" onblur="validateBirthDate(this)" id="zacetekizobrazbe" name="zacetekizobrazbe" type="date">
+                    </div>
+                    <div class="col">
+                    <label>Konec izobraževanje</label>
+                    <input class="form-control" id="konecizobrazbe" name="konecizobrazbe" type="date">
+                    </div>
+                </div>
+        
+                <br>
+                <button class="btn btn-success" id="dodajizobrazbo" onClick="dodajIzobrazbo(this)">Dodaj</button>
+                </div>
+                </div>
+            </div>    
+        </div>
+        <div class="row">
+            <div class="col-sm-auto"><button type="button" class="btn btn-success mb-3 w-100 text-truncate" data-toggle="modal" data-target="#izobrazbaModal">Dodaj</button></div>  
+            <div class="col"><button class="btn btn-success w-100" type="button" data-toggle="collapse" data-target="#collapseIzobrazba" aria-expanded="false" aria-controls="collapseIzobrazba">Prikaži</button></div>
+        </div>
+
+        <div id="collapseIzobrazba" class="collapse">
+            <div id="tabela-izobrazbe-status"></div>
+            <div id="trenutne-izobrazbe">
+            <% for(izobrazba of userdata.izobrazbaUporabnika) {%>
+                
+                <div class="card mt-3 shadow-sm">
+                    <div class="card-body">
+                      <h5 class="card-title"><%=izobrazba.nazivIzobrazbe%></h5>
+                      <h6 class="card-subtitle mb-2 text-muted"><%=izobrazba.ustanova%></h6>
+                      <h6 class="card-subtitle mb-2 text-muted"><%=izobrazba.nivoizobrazbe%></h6>
+                      <p class="card-text"><%=izobrazba.opis%></p>
+                      <p class="card-text"><%=izobrazba.datumzacetka%> - <%=izobrazba.datumkonca%></p>
+                      <button class="btn btn-success" id="izobrazba-<%=izobrazba.idizobrazbe %>" onClick="odstraniIzobrazbo(this)">Izbriši <span>&times;</span></button>
+                    </div>
+                  </div>
+            <% } %>
+                </div>
+            </div>
+
+        <hr>
+        <h4 class="text-muted">Delovne izkušnje</h4>
+        <br>
+
+        <div class="modal fade" id="izkusnjeModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+            <div id="izkusnjeform" class="form-group modal-content">
+                <div class="modal-header mb-2">
+                    <h5 class="modal-title">Dodajte delovno izkušnjo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                
+                <div class="form-row mb-3">
+                <div class="col">
+                    <label for="nazivpodjetja">Ime podjetja:</label>
+                    <input class="form-control" onblur="validateApology(this)" placeholder="FreelanceSLO d.d." type="text" id="nazivpodjetja" name="nazivpodjetja">
+                </div>
+                <div class="col">
+                    <label for="imemesta-izkusnja">Naziv mesta:</label>
+                    <input class="form-control" onblur="validateApology(this)" placeholder="Strokovnjak vpisovanja" type="text" id="imemesta-izkusnja" name="imemesta-izkusnja">
+                </div>
+                </div>
+                <div class="form-row mb-3">
+                    <div class="col">
+                        <label for="opisdela">Opis dela v podjetju:</label>
+                    <textarea class="form-control" id="opisdela" placeholder="V času dela sem vpisoval podatke v obrazce..." name="opisdela"></textarea>
+                    </div>
+                </div>
+                    
+                <div class="form-row mb-3">
+                    <div class="col">
+                    <label for="datumzacetka-izkusnja">Datum začetka:</label>
+                    <input class="form-control" type="date" id="datumzacetka-izkusnja" name="datumzacetka-izkusnja">
+                    </div>
+                    <div class="col">
+                        <label for="datumkonca-izkusnja">Datum konca:</label>
+                        <input class="form-control" type="date" id="datumkonca-izkusnja" name="datumkonca-izkusnja">
+                    </div>
+                </div>
+                <button id="dodajizkusnjo" class="btn btn-success" onclick="dodajIzkusnjo(this)">Dodaj</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="row">
+                <div class="col-sm-auto"><button type="button" class="btn btn-success mb-3 w-100 text-truncate" data-toggle="modal" data-target="#izkusnjeModal">Dodaj</button></div>
+                <div class="col"><button class="btn btn-success w-100" type="button" data-toggle="collapse" data-target="#collapseIzkusnje" aria-expanded="false" aria-controls="collapseIzkusnje">Prikaži</button></div>
+                </div>
+
+                <div id="collapseIzkusnje" class="collapse">
+                <div id="tabela-izkusnje-status"></div> 
+                <div id="trenutne-izkusnje">
+                <% for(izkusnja of userdata.delovneIzkusnjeUporabnika) {%>
+                    <div class="card mt-3 shadow-sm" id="trenutne-izkusnje">
+                        <div class="card-body">
+                        <h5 class="card-title"><%=izkusnja.nazivpodjetja %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><%=izkusnja.imemesta %></h6>
+                        <p class="card-text"><%=izkusnja.opisdela%></p>
+                        <p class="card-text"><%=izkusnja.datumzacetka %> - <%=izkusnja.datumkonca %></p>
+                        <button class="btn btn-success" id="izkusnja-<%=izkusnja.iddelovneizkusnje %>" onClick="odstraniIzkusnjo(this)">Izbriši <span>&times;</span></button>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+        <div class="card mt-4 mb-5">
+        <div class="card-body shadow-lg">
+            <h2>Izbris računa:</h2>
+            <hr>
+            <form id="deleteform" method="POST" action="/delavci/acc/izbris-racuna" enctype="application/x-www-form-urlencoded">
+                <div class="form-group">
+                    <label for="eposta">Pred izbrisom ponovno vpišite vaš e-poštni naslov.</label>
+                    <input class="form-control gf-to-validate" onblur="validateEmail(this)" type="text" name="eposta">
+                </div>
+                <input class="btn btn-success mt-2" type="button" onclick="checkForm(document.getElementById('deleteform')); document.getElementById('deleteform').prepend(document.getElementById('status'))" value="Izbriši račun">
+            </form>
+        </div>
+        </div>
+        
+    </div>
+    </main>
+    </body>
+</html>

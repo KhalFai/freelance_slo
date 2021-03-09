@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<script src="/bootstrap/jquery/jquery.min.js"></script>
+		<script src="/bootstrap/popper/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/css/custom-styles.css">
+        <script src="/clientside_js/custom-validation.js"></script>
+        <title>FreelanceSLO - Admin - Nastavitve</title>
+
+        <script src="/clientside_js/postData.js"></script>
+        <script src="/clientside_js/admin-nastavitve.js"></script>
+    </head>
+    <body>
+
+        <body class="gf-admin-platform-background">
+            <nav class="navbar fixed-top navbar-expand-md navbar-light gf-header-admin shadow-sm">	
+                <a class="navbar-brand text-light" href="/index.html">FreelanceSLO</a>
+    
+                <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
+                    <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/potrjevanje-admin">Administratorji</a>
+                    <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/neprimerna-dela">Dela</a>
+                    <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/prijavljeni-delavci">Delavci</a>
+                    <a class="btn gf-admin-btn-dark nav-item nav-link text-light m-2" href="/admin/nav/prijavljena-podjetja">Podjetja</a>
+        
+                    <a class="nav-item nav-link text-light" href="/admin/nav/nastavitve"><img class="gf-nav-icon" src="/icon/settings.svg" alt="Nastavitve"><span> Nastavitve</span></a>
+                    <a class="nav-item nav-link text-light" href="/admin/acc/logout"><img class="gf-nav-icon" src="/icon/logout.svg" alt="Odjava"><span> Odjava</span></a>
+                  </div>
+            </nav>
+    
+            
+            <div class="alert alert-primary d-none" id="status" role="alert">
+                <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+                <label id="status-text"></label>
+            </div>
+    
+        <main role="main">
+        <div class="container">
+    
+        <div class="card mt-4">
+        <div class="card-body shadow-lg">
+        <h5>Spremenite ime ali priimek</h5>
+        <hr>
+        <form id="podatkiform">
+        <div class="form-group">
+        <div class="form-row">
+        <div class="col"><label for="ime">Ime:</label><input class="form-control" name="ime" placeholder="Janez" value="<%=pagedata.ime%>" type="text" id="admin-ime"></div>
+        <div class="col"><label for="ime">Priimek:</label><input class="form-control" name="priimek" placeholder="Gradnik" value="<%=pagedata.priimek%>" type="text" id="admin-priimek"></div>
+        </div>
+        </div>
+        <button type="button" class="btn gf-admin-btn" onclick="posodobiPodatke()">Pošlji</button>
+        </form>
+        </div>
+        </div>
+
+        <div class="card mt-4">
+        <div class="card-body shadow-lg">
+        <h2>Izbris računa:</h2>
+        <hr>
+        <form id="deleteform" method="POST" action="/admin/acc/izbris-racuna" enctype="application/x-www-form-urlencoded">
+            <div class="form-group">
+                <label for="eposta">Pred izbrisom ponovno vpišite vaš e-poštni naslov.</label>
+                <input class="form-control gf-to-validate" onblur="validateEmail(this)" type="text" name="eposta">
+            </div>
+            <input class="btn gf-admin-btn mt-2" type="button" onclick="checkForm(document.getElementById('deleteform')); document.getElementById('deleteform').prepend(document.getElementById('status'))" value="Izbriši račun">
+        </form>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        </div>
+        </main>
+    </body>
+</html>

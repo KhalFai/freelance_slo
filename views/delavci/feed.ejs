@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<script src="/bootstrap/jquery/jquery.min.js"></script>
+		<script src="/bootstrap/popper/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/custom-styles.css">
+
+    <script src="/clientside_js/postData.js"></script>
+    <script src="/clientside_js/custom-validation.js"></script>
+    <script src="/clientside_js/delavci-feed.js"></script>
+</head>
+<body class="gf-delavci-platform-background">
+
+  <nav class="navbar fixed-top navbar-expand-md navbar-light gf-header-delavci shadow-sm">	
+    <a class="navbar-brand text-light" href="/index.html">FreelanceSLO</a>
+
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="justify-content-end navbar-collapse collapse" id="navbarCollapse">
+        <a class="nav-item nav-link text-light"  href="/delavci/nav/feed/?page=1""><img class="gf-nav-icon" src="/icon/feed.svg" alt="Dela"><span> Dela</span></a>
+        <a class="nav-item nav-link text-light" href="/delavci/nav/nastavitve"><img class="gf-nav-icon" src="/icon/settings.svg" alt="Nastavitve"><span> Nastavitve</span></a>
+        <a class="nav-item nav-link text-light" href="/delavci/acc/logout"><img class="gf-nav-icon" src="/icon/logout.svg" alt="Odjava"><span> Odjava</span></a>
+      </div>
+</nav>
+
+    <div class="alert alert-primary d-none shadow-lg" id="status" role="alert">
+        <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+        <label id="status-text"></label>
+    </div>
+    
+    <main role="main">
+        <div class="container">
+
+    <div id="podjetje-modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Podatki o podjetju</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                
+                <h2 class="text-dark" id="podjetje-naziv"></h2>
+                <hr>
+                <p class="text-muted" id="podjetje-podrocje"></p>
+                <hr>
+                <p class="text">Naslov podjetja: <span id="podjetje-naslov"></span></p>
+                <p class="text">Velikost: <span id="podjetje-velikost"></span></p>
+                <p class="text">Datum ustanovitve: <span id="podjetje-ustanovitev"></span></p>
+                <hr>
+                <p class="text-muted">Email: <span id="podjetje-email"></span></p>
+                <p class="text-muted">Telefon: <span id="podjetje-telefon"></span></p>
+                <hr>
+                <button class="btn btn-sm btn-danger m-1" type="button" data-toggle="collapse" data-target="#collapsePodjetjePrijava" aria-expanded="false" aria-controls="collapsePodjetjePrijava">Prijavi neprimerno podjetje.</button>
+
+                <div class="collapse" id="collapsePodjetjePrijava">
+                  <div id="podjetjeprijavaform" class="mt-2 p-2 border">  
+                  <label for="prijava">Pritožba:</label>    
+                  <textarea placeholder="Račun podjetje je neprimeren, saj..." class="form-control" id="podjetje-prijava"></textarea>
+                  <button id="prijavi-podjetje" class="btn btn-sm btn-danger mt-2" onclick="prijaviPodjetje(this)">Oddaj prijavo</button>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <nav>
+      <div class="nav nav-tabs mt-3" style="border-bottom:0px" id="nav-tab" role="tablist">
+        <a class="nav-item btn btn-light nav-link active mr-3" id="dela-sprejet-tab" data-toggle="tab" href="#trenutna-dela-tabid" role="tab" aria-controls="trenutna-dela" aria-selected="true">Ponudba del</a>
+        <a onclick="delaSprejet(this)" class="nav-item nav-link btn btn-light" id="trenutna-dela-tab" data-toggle="tab" href="#dela-sprejet" role="tab" aria-controls="dela-sprejet" aria-selected="false">Zaposlitve</a>
+      </div>
+    </nav>
+
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="trenutna-dela-tabid" role="tabpanel" aria-labelledby="trenutna-dela-tab">
+        <div class="card mb-2 mt-3 p-2 shadow-lg" id="iskanje-del">
+
+    <!-- ISKANJE-->
+    <div class="form-group">
+    <div class="form-row align-items-end">
+    <div class="col">
+    <input class="form-control" placeholder="Razvijalec SQL, oblikovalec spletnih strani..." type="text" name="iskanje-naziv" id="iskanje-naziv">
+    </div>
+    <div class="col-md-auto">
+    <button class="btn btn-success w-100 pr-4 pl-4 mt-3" onclick="isci()">Išči</button>
+    </div>
+    </div>
+
+    <a class="btn btn-success w-100 mt-3" data-toggle="collapse" href="#naprednoIskanje" role="button" aria-expanded="false" aria-controls="naprednoIskanje">Napredno...</a>
+  
+    </div>
+    <div class="collapse" id="naprednoIskanje">
+    <div class="form-group">
+    <div class="form-row align-items-end">
+    <div class="col">
+    <label for="iskanje-min-placa">Od:</label><input class="form-control" placeholder="0€" type="number" name="iskanje-min-placa" id="iskanje-min-placa">
+    </div>
+    <div class="col">
+    <label for="iskanje-max-placa">Do:</label><input class="form-control" placeholder="100€" type="number" name="iskanje-max-placa" id="iskanje-max-placa">
+    </div>
+    <div class="col">
+      <label for="vrste_place">Vrsta plačila:</label>
+      <select class="form-control" id="vrste_place" name="vrste_place">
+          <option value='%'>Katerokoli</option>
+          <% for(vrsta_place of pagedata.vrste_place) { %>
+          <option value="<%=vrsta_place.idplace%>"><%=vrsta_place.naziv%></option>
+          <%}%>
+      </select>
+    </div>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <div class="form-row">
+    <div class="col">
+    <label>Trajanje:</label>
+    <select class="form-control" id="trajanje">  
+    <option value='%'>Katerokoli</option>
+    <% for(trajanje of pagedata.trajanja) { %>
+        <option value="<%=trajanje.idtrajanja%>"><%=trajanje.naziv%></option>
+        <%}%>
+    </select>
+    </div>
+    <div class="col">
+    <label>Delovnik:</label>
+    <select class="form-control" id="delovniki">
+        <option value='%'>Katerokoli</option>
+        <% for(delovnik of pagedata.delovniki) { %>
+        <option value="<%=delovnik.iddelovnika%>"><%=delovnik.naziv%></option>
+        <%}%>
+    </select>
+    </div>
+    </div>
+    </div>
+    
+    <div class="form-group">
+    <label for="isci-podrocje">Področje:</label>
+    <input class="form-control" placeholder="Programiranje, prepisovanje besedil..." oninput="isciPodrocje(this)" name="isci-podrocje" id="isci-podrocje" type="text">
+    <div id="najdeno-podrocje"></div>
+    </div>
+
+    <div class="form-group">
+    <label for="isci-spretnost">Spretnosti:</label>
+    <input placeholder="SQL, Grafično Oblikovanje..." name="isci-spretnost" class="form-control" oninput="isciSpretnost(this)" id="isci-spretnost" type="text">
+    <div class="mt-2 mb-3" id="najdena-spretnost">
+    </div>
+    <div id="izbrana-spretnost"></div>
+    </div>
+    </div>
+        </div>
+        <div id="trenutna-dela">
+        <%if (trenutnadela.length == 0) {%>
+          <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+              <img class="rounded mx-auto d-block gf-empty-icon" src="/icon/empty.svg">
+              <h6 class="text-center mt-3 mb-3">Za zdaj tu ni nobenih del... Poskusite sledeče:</h6>
+              <ul>
+                <li>V nastavitvah izpolnite svoj CV.</li>
+                <li>Dodajte kontaktne informacije in potrdite svojo e-pošto.</li>
+              </ul>
+            </div>
+          </div>
+        <%} else for(delo of trenutnadela) {%>
+    
+          <div id="delo-container<%=delo.iddela%>" class="card mt-3 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title delo-header"><%=delo.naziv%></h5>
+                <h6 class="card-subtitle mb-2 text-muted"><%=delo.imepodrocja%></h6>
+                <h6 class="card-subtitle mb-2 text-muted"><%=delo.placa%>€ / <%=delo.nazivplace%></h6>
+                <hr>
+                <p class="card-text"><%=delo.opis%></p>
+                <hr>
+                <div class="row">
+                  <div class="col-sm">
+                <p class="card-text text-muted delo-details">Izobrazba: <%=delo.nivoizobrazbe%></p>
+                <p class="card-text text-muted delo-details">Spretnosti: <%=delo.spretnosti%></p>
+                  </div>
+                  <div class="col-sm">
+                <p class="card-text text-muted delo-details">Trajanje: <%=delo.nazivtrajanja%></p>
+                <p class="card-text text-muted delo-details">Delovnik: <%=delo.nazivdelovnika%></p>
+                  </div>
+                </div>
+                <hr>
+                
+                
+                <button class="btn btn-sm btn-success m-1" data-toggle="modal" data-target="#podjetje-modal" value=<%=delo.idpodjetja%> onclick="podjetjePodatki(this)">Podatki o podjetju</button>
+                <button class="btn btn-sm btn-success m-1" type="button" data-toggle="collapse" data-target="#collapseDelo<%=delo.iddela%>" aria-expanded="false" aria-controls="collapseDelo<%=delo.iddela%>">Prijavi se!</button>
+                <button class="btn btn-sm btn-danger m-1" type="button" data-toggle="collapse" data-target="#collapseDeloPrijava<%=delo.iddela%>" aria-expanded="false" aria-controls="collapseDeloPrijava<%=delo.iddela%>">Prijavi neprimerno vsebino!</button>
+                
+                <div class="collapse" id="collapseDelo<%=delo.iddela%>">
+                  <div id="delovlogaform<%=delo.iddela%>" class="mt-2 p-2 border">
+                      <label for="oddaja<%=delo.iddela%>">Vloga:</label>
+                      <textarea oninput="vlogaCounter(<%=delo.iddela%>)" name="oddaja<%=delo.iddela%>" placeholder="Za delo sem dobra izbira, saj..." class="form-control gf-to-validate" id="prijava-<%=delo.iddela%>"></textarea>
+                      <small class="text-muted">Besedilo prijave lahko vsebuje samo črke, števila in ločila.</small><br>
+                      <small id="vloga-counter<%=delo.iddela%>" class="text-muted"></small><br>
+                      <button class="btn btn-sm btn-success mt-2" value=<%=delo.iddela%> onclick="posljiOdziv(this)">Pošlji odziv</button>
+                  </div>
+                </div>
+      
+                <div class="collapse" id="collapseDeloPrijava<%=delo.iddela%>">
+                  <div id="delopritozbaform<%=delo.iddela%>" class="mt-2 p-2 border">  
+                  <label for="prijava<%=delo.iddela%>">Pritožba:</label>    
+                <textarea name="prijava<%=delo.iddela%>" class="form-control" id="prijava-tekst-<%=delo.iddela%>" placeholder="Delo ni primerno, saj..."></textarea>
+                <button class="btn btn-sm btn-danger mt-2" value=<%=delo.iddela%> onclick="prijaviDelo(this)">Prijavi neprimerno vsebino</button>
+                  </div>
+               </div>
+      
+              </div>
+            </div>
+          <%}%>
+          </div>
+          <nav>
+            <ul class="pagination justify-content-center mt-3">
+              <%if (pagedata.page > 1) {%>
+              <li class="page-item">
+                <a class="page-link text-success" href="/delavci/nav/feed/?page=<%=pagedata.page - 1%>" aria-label="Previous">
+                  <span>Prejšnja stran</span>
+                </a>
+              </li>
+              <%}%>
+              <%if (trenutnadela.length == 20) {%>
+              <li class="page-item">
+                <a class="page-link text-success" href="/delavci/nav/feed/?page=<%=parseInt(pagedata.page) + 1%>" aria-label="Next">
+                  <span>Naslednja stran</span>
+                </a>
+              </li>
+              <%}%>
+            </ul>
+          </nav>
+      </div>
+      <div class="tab-pane fade show mb-3" id="dela-sprejet" style="min-height:100vh;" role="tabpanel" aria-labelledby="dela-sprejet-tab">
+          <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+              <img class="rounded mx-auto d-block gf-empty-icon" src="/icon/empty.svg">
+              <h6 class="text-center mt-3 mb-3">Za zdaj tu ni nobenih del...</h6>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    </div>
+    </main>
+</body>
+</html>

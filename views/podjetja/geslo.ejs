@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<script src="/bootstrap/jquery/jquery.min.js"></script>
+		<script src="/bootstrap/popper/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/css/custom-styles.css">
+
+        <script src="/clientside_js/postData.js"></script>
+        <script src="/clientside_js/podjetje-ponastavi-geslo.js"></script>
+        <script src="/clientside_js/custom-validation.js"></script>
+    </head>
+        <body class="gf-podjetja-form-background">
+            <nav class="navbar fixed-top navbar-expand-md navbar-light gf-header-podjetja">	
+                <a class="navbar-brand text-light" href="/index.html">FreelanceSLO</a>
+    
+                <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="navbar-collapse collapse" id="navbarCollapse">
+                    <a class="nav-item nav-link text-light" href="/delavci/nav/login-register">Delavci</a>
+                    <a class="nav-item nav-link text-light" href="/podjetja/nav/login-register">Podjetja</a>
+                    <a class="nav-item nav-link text-light" href="/admin/nav/">Administratorji</a>
+                  </div>
+            </nav>
+    
+        <main role="main"">
+        <div class="container">
+        
+            <% if (napake.length > 0) {%>
+                <div class="alert alert-danger d-block" role="alert">
+                    <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+                    <ul>
+                        <%for (napaka of napake) {%>
+                        <li><%=napaka%></li>
+                        <%}%>
+                    </ul>
+                    <span></span>
+                </div>
+            <%}%>
+
+            <div class="alert alert-primary d-none" id="status" role="alert">
+                <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+                <label id="status-text"></label>
+            </div>
+
+        <div class="card">
+        <div class="card-body shadow-lg">
+        
+        <h1>Ponastavitev gesla</h1>
+        <hr>
+        <form method="POST" id="gesloform" action="/podjetja/acc/spremeni-geslo" enctype="application/x-www-form-urlencoded">
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+            <div class="form-group">
+                <h2>1. Vnesite e-poštni naslov in zahtevajte potrditveno geslo</h2>
+                <label for="eposta">E-poštni naslov:</label><input onchange="validateEmail(this)" class="form-control gf-to-validate" type="text" id="eposta" name="eposta">
+                <small class="text-muted">E-poštni naslov pustite v obrazcu, saj se uporablja tudi v drugem koraku.</small>
+            </div>
+                <input type="button" class="btn btn-primary" onclick="posljiKodo()" value="Zahtevaj potrditveno geslo."">
+            </li>
+
+            <li class="list-group-item">
+                <div class="form-group">
+                    <h2>2. Vnesite potrditveno geslo in novo geslo vašega računa.</h2>
+                    <label for="potrditvenakoda">Potrditveno geslo</label>
+                    <input onchange="validatePasswordCode(this)" class="form-control gf-to-validate" type="password" name="potrditvenakoda">
+                    <small class="text-muted">Potrditveno geslo je niz desetih črk in številk. Če ste opravili prvi korak, smo vam ga poslali na e-poštni naslov.</small>
+                    <br>
+                    <label for="geslo">Geslo</label><input  onchange="validatePassword(this)" class="form-control" type="password" name="geslo">
+                    <small class="text-muted">Geslo mora vsebovati eno veliko črko, malo črko, številko in ločilo/posebni znak (npr. - , ! , . ).</small>
+            </div>
+            <input class="btn btn-primary gf-to-validate" type="button" onclick="checkForm(document.getElementById('gesloform'))" value="Ponastavi geslo">
+            </li>
+            </ul>
+        </form>
+        </div>
+        </div>
+        </div>
+    </main>
+    </body>
+</html>

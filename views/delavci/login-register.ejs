@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<script src="/bootstrap/jquery/jquery.min.js"></script>
+		<script src="/bootstrap/popper/popper.min.js"></script>
+		<script src="/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="/css/custom-styles.css">
+
+        <title>FreelanceSLO - Delavci - Prijava</title>
+        <script src="/clientside_js/custom-validation.js"></script>
+    </head>
+    <body class="gf-delavci-form-background">
+        <nav class="navbar fixed-top navbar-expand-md navbar-light gf-header-delavci">	
+			<a class="navbar-brand text-light" href="/index.html">FreelanceSLO</a>
+
+			<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="navbar-collapse collapse" id="navbarCollapse">
+				<a class="nav-item nav-link text-light" href="/delavci/nav/login-register">Delavci</a>
+				<a class="nav-item nav-link text-light" href="/podjetja/nav/login-register">Podjetja</a>
+				<a class="nav-item nav-link text-light" href="/admin/nav/">Administratorji</a>
+			  </div>
+		</nav>
+		
+        <main role="main"">
+        <div class="container">
+            <% if (napake.length > 0) {%>
+                <div class="alert alert-danger d-block" role="alert">
+                    <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+                    <ul>
+                        <%for (napaka of napake) {%>
+                        <li><%=napaka%></li>
+                        <%}%>
+                    </ul>
+                    <span></span>
+                </div>
+            <%}%>
+
+            <div class="alert alert-primary d-none" id="status" role="alert">
+                <button type="button" onclick="removeElement(this.parentNode)" class="close"><span><span>&times;</span></button>
+                <label id="status-text"></label>
+            </div>
+            
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <a class="nav-item btn btn-success nav-link mr-3 active text-light mb-3" id="nav-login-tab" data-toggle="tab" href="#nav-login" role="tab" aria-controls="nav-login" aria-selected="true">Prijava</a>
+              <a class="nav-item btn btn-success nav-link mr-3 text-light mb-3" id="nav-register-tab" data-toggle="tab" href="#nav-register" role="tab" aria-controls="nav-register" aria-selected="false">Registracija</a>
+            </div>
+          </nav>
+
+          <div class="card">
+            <div class="card-body shadow-lg">
+          <div class="tab-content" id="nav-tabContent">
+            <br>
+            <div class="tab-pane fade show active" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab">
+                <form id="loginform" action="/delavci/acc/login" method="POST" enctype="application/x-www-form-urlencoded">
+                    <h1 class="display">Prijava</h1>
+                    <hr>
+                    <div class="form-group">
+                    <label for="eposta">E-pošta</label>
+                    <input type="email" class="form-control gf-to-validate" onblur="validateEmail(this)" placeholder="ime.priimek@domena.končnica" name="eposta" required>
+                    </div>
+                    <div class="form-group">
+                    <label for="geslo">Geslo</label>
+                    <input type="password" class="form-control gf-to-validate" onblur="validatePassword(this)" placeholder="Geslo1231." name="geslo" required>
+                    <br>
+                    <a href="/delavci/nav/geslo" class="text-success">Ste pozabili geslo?</a>
+                    </div>
+                    <input class="btn btn-success" type="button" value="Prijavi se!" onclick="checkForm(document.getElementById('loginform'))">
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="nav-register" role="tabpanel" aria-labelledby="nav-register-tab">
+                <h1 class="display">Registracija</h1>
+                <hr>
+                <form id="registerform" action="/delavci/acc/register" method="POST" enctype="application/x-www-form-urlencoded">
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col">
+                                <label for="ime">Ime</label>
+                                <input class="form-control gf-to-validate" onblur="validateName(this)" placeholder="Janez" type="text" name="ime">
+                            </div>
+                            <div class="col">
+                                <label for="priimek">Priimek</label>
+                                <input class="form-control gf-to-validate" onblur="validateName(this)" placeholder="Gradnik" type="text" name="priimek">
+                            </div>
+                    </div>
+                    <small class="text-muted">Ime in priimek morata vsebovati samo črke in imeti veliko začetnico.</small>
+                    </div>
+                    <div class="form-group">      
+                    <label for="eposta">E-pošta</label>
+                    <input class="form-control gf-to-validate" placeholder="ime.priimek@domena.končnica" onblur="validateEmail(this)" type="email" name="eposta">
+                    <small class="text-muted">E-poštni naslov mora slediti zgornji obliki. Na en naslov je lahko vezan samo en račun.</small>
+                    </div>
+                    <div class="form-group">      
+                        <label for="geslo">Geslo</label>
+                        <input class="form-control gf-to-validate" placeholder="Geslo1231." onblur="validatePassword(this)" type="password" name="geslo">
+                        <small class="text-muted">Geslo mora vsebovati vsaj eno veliko črko, majhno črko, številko, poseben znak in mora biti dolgo vsaj 8 mest.</small>
+                    </div>
+                    <input class="btn btn-success" type="button" value="Registriraj se!" onclick="checkForm(document.getElementById('registerform'))">
+                </form>
+            </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          </main>
+        </body>
+</html>
