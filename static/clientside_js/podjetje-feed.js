@@ -237,21 +237,49 @@ function posljiDelo() {
 
             let deloCard = document.createElement("div");
             deloCard.classList = "card-body";
+            
+            let headerRow = document.createElement("div");
+            headerRow.classList = "row";
+
+            let headerCol = document.createElement("div");
+            headerCol.classList = "col";
 
             let nazivHeader = document.createElement("h5");
             nazivHeader.classList = "card-title delo-header";
+            nazivHeader.id="prikaz-naziv-"+response.iddela;
             nazivHeader.innerText = delo.naziv;
-            deloCard.appendChild(nazivHeader);
+            headerCol.appendChild(nazivHeader);
 
             let podrocjeHeader = document.createElement("h6");
             podrocjeHeader.classList = "card-subtitle mb-2 text-muted";
+            podrocjeHeader.id="prikaz-podrocje-"+response.iddela;
             podrocjeHeader.innerText = delo.podrocje;
-            deloCard.appendChild(podrocjeHeader);
+            headerCol.appendChild(podrocjeHeader);
 
             let placaHeader = document.createElement("h6");
             placaHeader.classList = "card-subtitle mb-2 text-muted";
-            placaHeader.innerText = delo.placa + " € / " + nazivvrsteplace;
-            deloCard.appendChild(placaHeader);
+            placaHeader.innerText = delo.placa + " / " + nazivvrsteplace;
+            placaHeader.id="prikaz-placa-"+response.iddela;
+            headerCol.appendChild(placaHeader);
+
+            headerRow.appendChild(headerCol);
+
+            let headerCol2 = document.createElement("div");
+            headerCol2.classList = "col justify-content-end d-flex";
+
+            let urediButton = document.createElement("button");
+            urediButton.type = "button";
+            urediButton.classList = "btn btn-primary mt-4 mb-4";
+            urediButton.setAttribute("data-toggle","modal");
+            urediButton.setAttribute("data-target","#dodajdeloModal");
+            urediButton.setAttribute("onclick","modalUredi(this)");
+            urediButton.innerText = "Uredi";
+            urediButton.value = response.iddela;
+
+            headerCol2.appendChild(urediButton);
+
+            headerRow.appendChild(headerCol2);
+            deloCard.appendChild(headerRow);
 
             let hr = document.createElement("hr");
             deloCard.appendChild(hr);
@@ -259,6 +287,7 @@ function posljiDelo() {
             let opisParagraph = document.createElement("p");
             opisParagraph.classList = "card-text";
             opisParagraph.innerText = delo.opis;
+            opisParagraph.id = "prikaz-opis-"+response.iddela;
             deloCard.appendChild(opisParagraph);
 
             let hr2 = document.createElement("hr");
@@ -276,10 +305,12 @@ function posljiDelo() {
             let izobrazbaParagraph = document.createElement("p");
             izobrazbaParagraph.classList = "card-text text-muted delo-details";
             izobrazbaParagraph.innerText = "Izobrazba: "+nazivizobrazbe;
+            izobrazbaParagraph.id = "prikaz-izobrazba-"+response.iddela;
 
             let spretnostiParagraph = document.createElement("p");
             spretnostiParagraph.classList = "card-text text-muted delo-details";
-            spretnostiParagraph.innerText = "Spretnosti: "+sanirane_spretnosti.toString();
+            spretnostiParagraph.innerText = "Spretnosti: "+sanirane_spretnosti.join(", ");
+            spretnostiParagraph.id = "prikaz-spretnosti-"+response.iddela;
 
             colOne.appendChild(izobrazbaParagraph);
             colOne.appendChild(spretnostiParagraph);
@@ -292,10 +323,13 @@ function posljiDelo() {
             let trajanjeParagraph = document.createElement("p");
             trajanjeParagraph.classList = "card-text text-muted delo-details";
             trajanjeParagraph.innerText = "Trajanje: "+nazivtrajanja;
+            trajanjeParagraph.id = "prikaz-trajanje-"+response.iddela;
+
 
             let delovnikParagraph = document.createElement("p");
             delovnikParagraph.classList = "card-text text-muted delo-details";
             delovnikParagraph.innerText = "Delovnik: " + nazivdelovnika;
+            delovnikParagraph.id = "prikaz-delovnik-"+response.iddela;
             
             colTwo.appendChild(trajanjeParagraph);
             colTwo.appendChild(delovnikParagraph);
@@ -381,6 +415,10 @@ function delavecInfo(item) {
         if (response.uspelo == false) {
             openStatus(status,"Napaka na strežniku.","alert-danger");
             document.getElementById("delavec-modal").prepend(status);
+        }
+        if (response.uspelo == "spretnosti-ni") {
+            openStatus(status,"Delo mora imeti spretnosti.","alert-danger");
+            document.getElementById("dodajdeloformtop").prepend(status);
         }
         if (response.uspelo == "delavca-ni") { 
             openStatus(status,"Iskan delavec ne obstaja.","alert-danger");
@@ -752,4 +790,258 @@ function zavrniDelavca(item) {
             row.removeChild(document.getElementById("odzivContainer"+iddelavca));
         }
     });
+}
+
+function urediDelo(item) {
+    let status = document.getElementById("status");
+    let delo = {}
+
+    delo.iddela = item.value;
+    delo.naziv = document.getElementById("delo-naziv").value;
+    delo.opis = document.getElementById("delo-opis").value;
+    delo.placa = document.getElementById("delo-placa").value;
+    delo.podrocje = document.getElementById("isci-podrocje").value;
+
+    delo.nivoizobrazbe = document.getElementById("nivoizobrazbe").options[document.getElementById('nivoizobrazbe').selectedIndex].value;
+    let nazivizobrazbe = document.getElementById("nivoizobrazbe").options[document.getElementById('nivoizobrazbe').selectedIndex].innerText;
+
+    delo.trajanje = document.getElementById("trajanje").options[document.getElementById('trajanje').selectedIndex].value;
+    let nazivtrajanja = document.getElementById("trajanje").options[document.getElementById('trajanje').selectedIndex].innerText;
+
+    delo.delovnik = document.getElementById("delovniki").options[document.getElementById('delovniki').selectedIndex].value;
+    let nazivdelovnika = document.getElementById("delovniki").options[document.getElementById('delovniki').selectedIndex].innerText;
+
+    delo.vrstaplace = document.getElementById("vrste_place").options[document.getElementById('vrste_place').selectedIndex].value;
+    let nazivvrsteplace = document.getElementById("vrste_place").options[document.getElementById('vrste_place').selectedIndex].innerText;
+    
+    delo.spretnosti = [];
+
+    for (spretnost of document.getElementById("izbrana-spretnost").childNodes) {
+        if (spretnost.childNodes[0] != undefined) {
+            delo.spretnosti.push(spretnost.innerText)
+        }
+    }
+    if (delo.naziv == "" || delo.naziv == undefined ||
+        delo.opis == "" || delo.opis == undefined ||
+        delo.placa == "" || delo.placa == undefined ||
+        delo.podrocje == "" || delo.podrocje == undefined ||
+        delo.nivoizobrazbe == "" || delo.nivoizobrazbe == undefined ||
+        delo.trajanje == "" || delo.trajanje == undefined ||
+        delo.delovnik == "" || delo.delovnik == undefined ||
+        delo.vrstaplace == "" || delo.vrstaplace == undefined ||
+        delo.spretnosti.length < 1
+        ) {
+            openStatus(status,"Izpolnite celoten obrazec.","alert-warning");
+            document.getElementById("dodajdeloformtop").prepend(status);
+    }
+    else {
+        postData("/podjetja/dela/uredi-delo",{delo:delo}).then((response)=>{
+            if (response.uspelo == false) {
+                openStatus(status,"Napaka na strežniku.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+            }
+            if (response.uspelo == "seja-narobe") {
+                openStatus(status,"Niste prijavljeni. Poskusite znova.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+            }
+            if (response.uspelo == "opozorjen") { 
+                openStatus(status,"Ko ste opozorjeni, ne smete urejati del.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+            }
+            if (response.uspelo == "naziv-opis-narobe") {
+                openStatus(status,"Opis ali naziv dela ni pravilno vpisan, mora vsebovati samo črke, številke in ločila","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+            }
+            if (response.uspelo == "placa-narobe") {
+                openStatus(status,"Plača mora biti večja od 0.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("delo-placa").classList.add("is-invalid");
+            }
+            if (response.uspelo == "podrocje-narobe") {
+                openStatus(status,"Področje dela se ne ujema s podatkovno bazo.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("isci-podrocje").classList.add("is-invalid");
+            }
+            if (response.uspelo == "nivoizobrazbe-narobe") {
+                openStatus(status,"Nivo izobrazbe se ne ujema s podatkovno bazo.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("nivoizobrazbe").classList.add("is-invalid");
+            }
+            if (response.uspelo == "trajanje-narobe") {
+                openStatus(status,"Trajanje dela se ne ujema s podatkovno bazo.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("trajanje").classList.add("is-invalid");
+            }
+            if (response.uspelo == "delovnik-narobe") {
+                openStatus(status,"Delovnik se ne ujema s podatkovno bazo.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("delovniki").classList.add("is-invalid");
+            }
+            if (response.uspelo == "vrsta-place-narobe") {
+                openStatus(status,"Vrsta plače se ne ujema s podatkovno bazo.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("vrste_place").classList.add("is-invalid");
+            }
+            if (response.uspelo == "spretnost-narobe") {
+                openStatus(status,"Spretnosti se ne ujemajo s podatkovno bazo.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+    
+                document.getElementById("isci-spretnost").classList.add("is-invalid");
+            }
+            if (response.uspelo == "spretnosti-ni") {
+                openStatus(status,"Delo mora imeti spretnosti.","alert-danger");
+                document.getElementById("dodajdeloformtop").prepend(status);
+            }
+            if (response.uspelo == true) { 
+                openStatus(status,"Posodobitev uspešna.","alert-success");
+                document.getElementById("dodajdeloformtop").prepend(status);
+
+                document.getElementById("prikaz-naziv-"+item.value).innerText = delo.naziv;
+                document.getElementById("prikaz-podrocje-"+item.value).innerText = delo.podrocje;
+                document.getElementById("prikaz-opis-"+item.value).innerText = delo.opis;
+                document.getElementById("prikaz-placa-"+item.value).innerText = delo.placa+" / "+document.getElementById("vrste_place").options[document.getElementById('vrste_place').selectedIndex].innerText;
+
+                document.getElementById("prikaz-izobrazba-"+item.value).innerText =  "Izobrazba: "+document.getElementById("nivoizobrazbe").options[document.getElementById('nivoizobrazbe').selectedIndex].innerText;
+
+                document.getElementById("prikaz-trajanje-"+item.value).innerText = "Trajanje: "+document.getElementById("trajanje").options[document.getElementById('trajanje').selectedIndex].innerText;
+            
+                document.getElementById("prikaz-delovnik-"+item.value).innerText =  "Delovnik: "+document.getElementById("delovniki").options[document.getElementById('delovniki').selectedIndex].innerText;
+
+                document.getElementById("prikaz-spretnosti-"+item.value).innerText =  "Spretnosti: "+delo.spretnosti.join(", ");
+            }
+        });
+    }
+
+
+}
+
+function modalUredi(item) {
+    let status = document.getElementById("status");
+    let gumbDiv = document.getElementById("modal-button-div");
+    gumbDiv.innerHTML = "";
+
+    let urediButton  = document.createElement("button");
+    urediButton.classList = "btn btn-primary";
+    urediButton.value = item.value;
+    urediButton.onclick = function() {urediDelo(urediButton)};
+    urediButton.innerText= "Uredi";
+
+    gumbDiv.appendChild(urediButton);
+
+    document.getElementById("delo-naziv").value = document.getElementById("prikaz-naziv-"+item.value).innerText;
+    document.getElementById("delo-opis").value = document.getElementById("prikaz-opis-"+item.value).innerText;
+    document.getElementById("delo-naziv").value = document.getElementById("prikaz-naziv-"+item.value).innerText;
+    
+    document.getElementById("delo-placa").value = document.getElementById("prikaz-placa-"+item.value).innerText.match(/.+?(?= \/ )/);
+    
+    let getIndex = 0;
+
+    for (let i=0;i<document.getElementById("vrste_place").options.length;i++) {
+        if (document.getElementById("vrste_place").options[i].text == document.getElementById("prikaz-placa-"+item.value).innerText.match(/(?<= \/ ).*/)) {
+            document.getElementById("vrste_place").selectedIndex = i;
+        }
+    }
+
+    for (let i=0;i<document.getElementById("trajanje").options.length;i++) {
+        if (document.getElementById("trajanje").options[i].text == document.getElementById("prikaz-trajanje-"+item.value).innerText.slice(10)) {
+            document.getElementById("trajanje").selectedIndex = i;
+        }
+    }
+
+    for (let i=0;i<document.getElementById("delovniki").options.length;i++) {
+        if (document.getElementById("delovniki").options[i].text == document.getElementById("prikaz-delovnik-"+item.value).innerText.slice(10)) {
+            document.getElementById("delovniki").selectedIndex = i;
+        }
+    }
+
+    for (let i=0;i<document.getElementById("nivoizobrazbe").options.length;i++) {
+        if (document.getElementById("nivoizobrazbe").options[i].text == document.getElementById("prikaz-izobrazba-"+item.value).innerText.slice(11)) {
+            document.getElementById("nivoizobrazbe").selectedIndex = i;
+        }
+    }
+
+    let spretnosti = document.getElementById("prikaz-spretnosti-"+item.value).innerText.slice(12).split(", ");
+
+    document.getElementById("izbrana-spretnost").innerHTML = "";
+
+    postData("/podjetja/dela/isci-spretnost-edit",{iskanaspretnost:spretnosti}).then((response)=>{
+        if (response.uspelo != false && response.uspelo != undefined) {
+        for (respretnost of response.uspelo) {
+            let spretnostGumb = document.createElement("button");
+           spretnostGumb.value = respretnost.idspretnosti;
+           spretnostGumb.name = "spretnost";
+           spretnostGumb.innerText = respretnost.naziv;
+           spretnostGumb.onclick = function() {izbrisiSpretnost(this);}
+           spretnostGumb.classList = "btn btn-primary mr-2 mt-2 mb-2";
+           document.getElementById("izbrana-spretnost").appendChild(spretnostGumb);
+            }
+        }
+        else {
+            openStatus(status,"Iskane spretnosti ne obstajajo.","alert-danger");
+            document.getElementById("dodajdeloformtop").prepend(status);
+        }
+    });
+
+    //odstrani invalide
+    openStatus(status,"Vklopljen način za urejanje.","alert-primary");
+    document.getElementById("dodajdeloformtop").prepend(status);
+
+    if (document.getElementById("delo-placa").classList.contains("is-invalid")) document.getElementById("delo-placa").classList.remove("is-invalid");
+    if (document.getElementById("delo-naziv").classList.contains("is-invalid")) document.getElementById("delo-naziv").classList.remove("is-invalid");
+    if (document.getElementById("delo-opis").classList.contains("is-invalid")) document.getElementById("delo-opis").classList.remove("is-invalid");
+    if (document.getElementById("isci-podrocje").classList.contains("is-invalid")) document.getElementById("isci-podrocje").classList.remove("is-invalid");
+    if (document.getElementById("nivoizobrazbe").classList.contains("is-invalid")) document.getElementById("nivoizobrazbe").classList.remove("is-invalid");
+    if (document.getElementById("trajanje").classList.contains("is-invalid")) document.getElementById("trajanje").classList.remove("is-invalid");
+    if (document.getElementById("delovniki").classList.contains("is-invalid")) document.getElementById("delovniki").classList.remove("is-invalid");
+    if (document.getElementById("vrste_place").classList.contains("is-invalid")) document.getElementById("vrste_place").classList.remove("is-invalid");
+    if (document.getElementById("isci-spretnost").classList.contains("is-invalid")) document.getElementById("isci-spretnost").classList.remove("is-invalid");
+
+    if (document.getElementById("isci-spretnost").classList.contains("is-valid")) document.getElementById("isci-spretnost").classList.remove("is-valid");
+    if (document.getElementById("isci-podrocje").classList.contains("is-valid")) document.getElementById("isci-podrocje").classList.remove("is-valid");
+
+    document.getElementById("isci-podrocje").value = document.getElementById("prikaz-podrocje-"+item.value).innerText;
+}
+
+function modalDodaj() {
+    let gumbDiv = document.getElementById("modal-button-div");
+    let status = document.getElementById("status");
+    
+    gumbDiv.innerHTML = "";
+
+    let createButton = document.createElement("button");
+    //<button class="btn btn-primary" onclick="posljiDelo()">Ustvari</button>
+
+    createButton.classList = "btn btn-primary";
+    createButton.onclick = function(){posljiDelo()};
+    createButton.innerText = "Ustvari";
+
+    openStatus(status,"Vklopljen način za dodajanje.","alert-primary");
+    document.getElementById("dodajdeloformtop").prepend(status);
+
+    document.getElementById("delo-naziv").value = "";
+    document.getElementById("delo-opis").value = "";
+    document.getElementById("delo-placa").value = "";
+    document.getElementById("isci-podrocje").value = "";
+    document.getElementById("izbrana-spretnost").innerHTML = "";
+
+    if (document.getElementById("delo-placa").classList.contains("is-invalid")) document.getElementById("delo-placa").classList.remove("is-invalid");
+    if (document.getElementById("delo-naziv").classList.contains("is-invalid")) document.getElementById("delo-naziv").classList.remove("is-invalid");
+    if (document.getElementById("delo-opis").classList.contains("is-invalid")) document.getElementById("delo-opis").classList.remove("is-invalid");
+    if (document.getElementById("isci-podrocje").classList.contains("is-invalid")) document.getElementById("isci-podrocje").classList.remove("is-invalid");
+    if (document.getElementById("nivoizobrazbe").classList.contains("is-invalid")) document.getElementById("nivoizobrazbe").classList.remove("is-invalid");
+    if (document.getElementById("trajanje").classList.contains("is-invalid")) document.getElementById("trajanje").classList.remove("is-invalid");
+    if (document.getElementById("delovniki").classList.contains("is-invalid")) document.getElementById("delovniki").classList.remove("is-invalid");
+    if (document.getElementById("vrste_place").classList.contains("is-invalid")) document.getElementById("vrste_place").classList.remove("is-invalid");
+    if (document.getElementById("isci-spretnost").classList.contains("is-invalid")) document.getElementById("isci-spretnost").classList.remove("is-invalid");
+
+    if (document.getElementById("isci-spretnost").classList.contains("is-valid")) document.getElementById("isci-spretnost").classList.remove("is-valid");
+    if (document.getElementById("isci-podrocje").classList.contains("is-valid")) document.getElementById("isci-podrocje").classList.remove("is-valid");
+
+    gumbDiv.appendChild(createButton);
 }

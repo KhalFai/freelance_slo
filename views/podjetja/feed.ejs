@@ -164,14 +164,14 @@
             </div>
         </div>
         </div>
-
-        <button class="btn btn-primary" onclick="posljiDelo()">Ustvari</button>
+        <div id="modal-button-div">
         </div>
+      </div>
     </div>
     </div>
     </div>
     </div>
-    <button type="button" class="btn btn-primary w-100 mt-3" data-toggle="modal" data-target="#dodajdeloModal">Dodaj</button>
+    <button type="button" class="btn btn-primary w-100 mt-3" data-toggle="modal" data-target="#dodajdeloModal" onclick="modalDodaj()">Dodaj</button>
     <div id="trenutna-dela">
       <%if (trenutnadela.length == 0) {%>
         <div id="empty-feed" class="card mt-3 shadow-sm">
@@ -183,20 +183,27 @@
       <%} else for(delo of trenutnadela) {%>
     <div class="card mt-3 shadow-sm" id="delo-container-<%=delo.iddela%>">
     <div class="card-body">
-    <h5 class="card-title delo-header"><%=delo.naziv%></h5>
-    <h6 class="card-subtitle mb-2 text-muted"><%=delo.imepodrocja%></h6>
-    <h6 class="card-subtitle mb-2 text-muted"><%=delo.placa%>/<%=delo.nazivplace%></h6>
+    <div class="row">
+    <div class="col">
+      <h5 class="card-title delo-header" id="prikaz-naziv-<%=delo.iddela%>"><%=delo.naziv%></h5>
+      <h6 class="card-subtitle mb-2 text-muted" id="prikaz-podrocje-<%=delo.iddela%>"><%=delo.imepodrocja%></h6>
+      <h6 class="card-subtitle mb-2 text-muted" id="prikaz-placa-<%=delo.iddela%>" ><%=delo.placa%> / <%=delo.nazivplace%></h6>
+    </div>
+    <div class="col justify-content-end d-flex">
+      <button type="button" class="btn btn-primary mt-4 mb-4" data-toggle="modal" value="<%=delo.iddela%>" data-target="#dodajdeloModal" onclick="modalUredi(this)">Uredi</button>
+    </div>
+    </div>
     <hr>
-    <p class="card-text"><%=delo.opis%></p>
+    <p class="card-text" id="prikaz-opis-<%=delo.iddela%>"><%=delo.opis%></p>
     <hr>
     <div class="row">
     <div class="col-sm">
-    <p  class="card-text text-muted delo-details">Izobrazba: <%=delo.nivoizobrazbe%></p>
-    <p  class="card-text text-muted delo-details" >Spretnosti: <%=delo.spretnosti%></p>
+    <p  id="prikaz-izobrazba-<%=delo.iddela%>" class="card-text text-muted delo-details">Izobrazba: <%=delo.nivoizobrazbe%></p>
+    <p  id="prikaz-spretnosti-<%=delo.iddela%>" class="card-text text-muted delo-details" >Spretnosti: <%=delo.spretnosti%></p>
     </div>
     <div class="col-sm">
-    <p  class="card-text text-muted delo-details">Trajanje: <%=delo.nazivtrajanja%></p>
-    <p  class="card-text text-muted delo-details" >Delovnik: <%=delo.nazivdelovnika%></p>
+    <p  id="prikaz-trajanje-<%=delo.iddela%>" class="card-text text-muted delo-details">Trajanje: <%=delo.nazivtrajanja%></p>
+    <p  id="prikaz-delovnik-<%=delo.iddela%>" class="card-text text-muted delo-details" >Delovnik: <%=delo.nazivdelovnika%></p>
     </div>
     </div>
     

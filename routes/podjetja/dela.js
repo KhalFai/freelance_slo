@@ -13,6 +13,18 @@ router.post('/isci-spretnost',function(request,response) {
 	});
 });
 
+router.post('/isci-spretnost-edit',function(request,response) {
+	let connection = request.app.get('connection');
+	let iskanaspretnost = request.body.iskanaspretnost;
+	connection.query("SELECT naziv,idspretnosti FROM spretnosti WHERE naziv IN (?) LIMIT 10;",[iskanaspretnost],function(err,results,fields) { 
+		if (err) {response.send({uspelo:false});}
+		
+    else if(results.length > 0) response.send({uspelo:results});
+    else response.send({uspelo:undefined});
+	});
+});
+
+
 router.post('/isci-podrocje',function(request,response) {
     let connection = request.app.get('connection');
 
@@ -28,6 +40,76 @@ router.post('/isci-podrocje',function(request,response) {
     }}
   });
 
+router.post('/uredi-delo',function(request,response) {
+    let connection = request.app.get('connection');
+
+    let delo = request.body.delo;
+    console.log(delo);
+
+    if (request.session.podjetjeid == undefined) response.send({uspelo:"seja-narobe"})
+
+    else if (!/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(delo.naziv) || !/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(delo.opis)) response.send({uspelo:"naziv-opis-narobe"});
+    //plača večja od 0
+    else if (delo.placa <= 0) response.send({uspelo:"placa-narobe"})
+    //področje je v bazi
+    else connection.query("SELECT opozorjen FROM podjetje WHERE idpodjetja=? AND opozorjen = 1",[request.session.podjetjeid],function(err,results,fields) {
+      if (err) response.send({uspelo:false});
+      else if (results.length > 0) response.send({uspelo:"opozorjen"});
+      else connection.query("SELECT idpodrocja FROM podrocjapodjetji WHERE imepodrocja = ?",[delo.podrocje],function(err,results,fields) {
+      console.log(err);
+      if (err) response.send({uspelo:false})
+      else if (results.length < 1) response.send({uspelo:"podrocje-narobe"})
+      else {
+        request.body.podrocje = results[0].idpodrocja;
+        //nivoizobrazbe je v bazi
+        connection.query("SELECT idnivoja FROM nivojiizobrazbe WHERE idnivoja = ?",[delo.nivoizobrazbe],function(err,results,fields) {
+          console.log(err);
+          if (err) response.send({uspelo:false})
+          else if (results.length < 1) response.send({uspelo:"nivoizobrazbe-narobe"})
+          else {
+            //trajanje je v bazi
+            connection.query("SELECT idtrajanja FROM trajanje WHERE idtrajanja = ?",[delo.trajanje],function(err,results,fields) {
+              console.log(err);
+              if (err) response.send({uspelo:false})
+              else if (results.length < 1) response.send({uspelo:"trajanje-narobe"})
+              else {
+                connection.query("SELECT iddelovnika FROM delovnik WHERE iddelovnika = ?",[delo.delovnik],function(err,results,fields) {
+                //delovnik je v bazi
+                console.log(err);
+                if (err) response.send({uspelo:false})
+                else if (results.length < 1) response.send({uspelo:"delovnik-narobe"})
+                else {
+                  if (delo.spretnosti.length > 0) {
+                  connection.query("SELECT idplace FROM vrste_plac WHERE idplace = ?",[delo.vrstaplace],function(err,results,fields) {
+                    console.log(err);
+                    if (err) response.send({uspelo:false})
+                    else if (results.length < 1) response.send({uspelo:"vrsta-place-narobe"})
+                    else {
+    connection.beginTransaction(function(err) {
+    if (err) {response.send({uspelo:false});connection.rollback();}
+    connection.query("UPDATE dela SET naziv = ?,opis = ?, placa=?, idizobrazbe=?,idpodrocja = (SELECT idpodrocja FROM podrocjapodjetji WHERE imepodrocja = ?),idplace=?,idtrajanja=?,iddelovnika=? WHERE iddela=?",[delo.naziv,delo.opis,delo.placa,delo.nivoizobrazbe,delo.podrocje,delo.vrstaplace,delo.trajanje,delo.delovnik,delo.iddela],function(err,results,fields) {
+      console.log(err);
+      if (err) {response.send({uspelo:false});connection.rollback();}
+      else {
+        connection.query("DELETE FROM dela_has_spretnosti WHERE iddela = ?",[delo.iddela],function(err,results,fields) {
+          console.log(err);
+          if (err) {response.send({uspelo:false});connection.rollback();}
+          else {
+            connection.query("INSERT INTO dela_has_spretnosti SELECT ?,idspretnosti FROM spretnosti WHERE naziv IN (?)",[delo.iddela,delo.spretnosti],function(err,results,fields) {
+              console.log(err);
+              if (err) {response.send({uspelo:false});connection.rollback();}
+              else {
+                response.send({uspelo:true});
+              }
+            });
+          }
+        });
+      }
+    });
+    });}})}
+    else response.send("spretnosti-ni");
+  }})}})}})}})});
+  })
 router.post('/dodaj-delo',function(request,response) {
     let connection = request.app.get('connection');
     //odstrani duplikate iz spretnosti
@@ -111,7 +193,8 @@ router.post('/dodaj-delo',function(request,response) {
                     }});});
                     }
                   });
-                }}
+                } else response.send({uspelo:"spretnosti-ni"});
+                }
                 });
               }
             });
