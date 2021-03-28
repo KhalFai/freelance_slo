@@ -3,7 +3,6 @@ function posljiOdziv(item) {
     let iddela = item.value;
     let tekstprijave = document.getElementById("prijava-"+iddela).value;
 
-    //črke,številke,ločila
     if (!/^[0-9a-zžščćđA-ZŽŠĐČĆ. -,:;']+$/.test(tekstprijave)) {
         openStatus(status,"Besedilo prijave lahko vsebuje samo črke, številke in ločila.","alert-danger");
         document.getElementById("delovlogaform"+iddela).prepend(status);
@@ -212,9 +211,7 @@ function isci() {
             descriptionRow.appendChild(colTwo);
             
             cardBody.appendChild(descriptionRow);
-
-//   <button class="btn btn-sm btn-success m-1" data-toggle="modal" data-target="#podjetje-modal" value=<%=delo.idpodjetja%> onclick="podjetjePodatki(this)">Podatki o podjetju</button>
-               
+       
             let hrThree = document.createElement("hr");
 
             cardBody.appendChild(hrThree);
@@ -227,7 +224,6 @@ function isci() {
             podjetjeButton.onClick = podjetjePodatki({value:delo.idpodjetja});
             podjetjeButton.innerText = "Podatki o podjetju";
 
-            //<button class="btn btn-sm btn-success m-1" type="button" data-toggle="collapse" data-target="#collapseDelo<%=delo.iddela%>" aria-expanded="false" aria-controls="collapseDelo<%=delo.iddela%>">Prijavi se!</button>
             let prijavaButton = document.createElement("button");
             prijavaButton.classList = "btn btn-sm btn-success m-1";
             prijavaButton.setAttribute("type","button");
@@ -237,7 +233,6 @@ function isci() {
             prijavaButton.setAttribute("aria-controls","collapseDelo"+delo.iddela);
             prijavaButton.innerText = "Prijavi se!";
 
-            //<button class="btn btn-sm btn-danger m-1" type="button" data-toggle="collapse" data-target="#collapseDeloPrijava<%=delo.iddela%>" aria-expanded="false" aria-controls="collapseDeloPrijava<%=delo.iddela%>">Prijavi neprimerno vsebino!</button>
             let neprimernoButton = document.createElement("button");
             neprimernoButton.classList = "btn btn-sm btn-danger m-1";
             neprimernoButton.setAttribute("type","button");
@@ -290,7 +285,6 @@ function isci() {
 
             vlogaFormDiv.appendChild(vlogaCounter);
 
-            //<button class="btn btn-sm btn-success mt-2" value=<%=delo.iddela%> onclick="posljiOdziv(this)">Pošlji odziv</button>
             vlogaFormDiv.appendChild(vlogaBr);
 
             let vlogaSubmit = document.createElement("button");
@@ -661,7 +655,6 @@ function delaSprejet(item) {
 
 function podjetjePodatki(item) {
     let status = document.getElementById("status");
-    //document.getElementById("dela-sprejet").innerHTML = "";
 
     getData("/delavci/dela/podatki-podjetje/"+item.value,{}).then((response) => {
         if (response.uspelo == false) {
@@ -701,7 +694,6 @@ function prijaviDelo(item) {
     let iddela = item.value;
     let prijava_tekst = document.getElementById("prijava-tekst-"+iddela).value;
     let status = document.getElementById("status");
-    //črke števila ločila
     if (!/^[0-9a-zžščćđA-ZŽŠĐČĆ. -,:;'?!*]+$/.test(prijava_tekst)) {
         openStatus(status,"Besedilo prijave lahko vsebuje samo črke, številke in ločila.","alert-danger");
         document.getElementById("delopritozbaform"+iddela).prepend(status);

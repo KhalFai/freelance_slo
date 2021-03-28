@@ -154,7 +154,7 @@ function posljiDelo() {
             openStatus(status,"Izpolnite celoten obrazec.","alert-warning");
             document.getElementById("dodajdeloformtop").prepend(status);
         }
-    //naziv
+
     else if (!/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(delo.naziv) || !/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(delo.opis)) {
         openStatus(status,"Opis ali naziv dela ni pravilno vpisan, mora vsebovati samo črke, številke in ločila","alert-danger");
         document.getElementById("dodajdeloformtop").prepend(status);
@@ -162,7 +162,7 @@ function posljiDelo() {
         document.getElementById("delo-opis").classList.add("is-invalid");
         document.getElementById("delo-naziv").classList.add("is-invalid");
     }
-    //ali je obrazec izpolnjen?
+
     else postData("/podjetja/dela/dodaj-delo",delo).then((response)=>{
         if (response.uspelo == false) {
             openStatus(status,"Napaka na strežniku.","alert-danger");
@@ -528,12 +528,10 @@ function delavecInfo(item) {
             document.getElementById("delavec-jeziki").appendChild(DOMjezik);
         }
 
-        //naredi div za gumba
         document.getElementById("gumbi-div").innerHTML = " ";
         document.getElementById("neprimerno-div").innerHTML = " ";
         let DOMizbira = document.createElement("div");
 
-        //dodaj oba gumba
         let sprejmiGumb = document.createElement("button");
         sprejmiGumb.innerText = "Sprejmi";
         sprejmiGumb.classList = "mr-1 mt-1 mb-1 btn btn-primary";
@@ -680,7 +678,6 @@ function prijaviDelavca(item) {
     let iddelavca = item.value;
     let prijava = document.getElementById("prijava-tekst-"+iddelavca).value
     
-    //črke in številke
     if (!/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,-:;_]+$/.test(prijava)) {
         openStatus(status,"Dovoljene so samo črke, številke in ločila.","alert-danger");
         document.getElementById("neprimerno-div").prepend(status);
@@ -988,7 +985,6 @@ function modalUredi(item) {
         }
     });
 
-    //odstrani invalide
     openStatus(status,"Vklopljen način za urejanje.","alert-primary");
     document.getElementById("dodajdeloformtop").prepend(status);
 
@@ -1015,7 +1011,6 @@ function modalDodaj() {
     gumbDiv.innerHTML = "";
 
     let createButton = document.createElement("button");
-    //<button class="btn btn-primary" onclick="posljiDelo()">Ustvari</button>
 
     createButton.classList = "btn btn-primary";
     createButton.onclick = function(){posljiDelo()};

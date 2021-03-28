@@ -18,7 +18,6 @@ router.get('/potrjevanje-admin/',function(request,response) {
     data.pageData.page = stranvalue;
 
     connection.query("SELECT idadmin,eposta,geslo,ime,priimek FROM freelance_slo.administratorji WHERE potrjen IS NULL LIMIT 20 OFFSET ?;",[(stranvalue-1) * 20],function (err,results,fields) {
-        console.log(err);
         if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
         else {
         data.pageData.zahteve = results;
@@ -42,8 +41,21 @@ router.get('/neprimerna-dela',function(request,response) {
         if (stranvalue == undefined || stranvalue == 0 || stranvalue == '') stranvalue = 1;
         data.pagedata.page = stranvalue;
 
-        connection.query("SELECT dela.iddela, dela.naziv, opis, placa, nivojiizobrazbe.naziv AS nivoizobrazbe, podrocjapodjetji.imepodrocja, trajanje.naziv AS nazivtrajanja, delovnik.naziv AS nazivdelovnika, vrste_plac.naziv AS nazivplace, besedilo_prijave, pojasnilo_admina, opozorjen, GROUP_CONCAT(spretnosti.naziv SEPARATOR ', ') AS spretnosti FROM dela LEFT JOIN dela_has_spretnosti ON dela.iddela = dela_has_spretnosti.iddela LEFT JOIN spretnosti ON dela_has_spretnosti.idspretnosti = spretnosti.idspretnosti INNER JOIN nivojiizobrazbe nivojiizobrazbe ON nivojiizobrazbe.idnivoja = dela.idizobrazbe INNER JOIN podrocjapodjetji ON podrocjapodjetji.idpodrocja = dela.idpodrocja INNER JOIN trajanje ON trajanje.idtrajanja = dela.idtrajanja INNER JOIN delovnik ON delovnik.iddelovnika = dela.iddelovnika INNER JOIN vrste_plac ON vrste_plac.idplace = dela.idplace INNER JOIN dela_opozorila ON dela.iddela = dela_opozorila.iddela WHERE dela.opozorjen IS NULL GROUP BY dela.iddela ORDER BY dela.iddela DESC LIMIT 20 OFFSET ?;",[(stranvalue-1) * 20],function (err,results,fields) {
-            console.log(err);
+        connection.query(
+        `SELECT dela.iddela, dela.naziv, opis, placa, 
+        nivojiizobrazbe.naziv AS nivoizobrazbe, podrocjapodjetji.imepodrocja, 
+        trajanje.naziv AS nazivtrajanja, delovnik.naziv AS nazivdelovnika, vrste_plac.naziv AS nazivplace,
+        besedilo_prijave, pojasnilo_admina, opozorjen, GROUP_CONCAT(spretnosti.naziv SEPARATOR ', ') AS spretnosti 
+        FROM dela 
+        LEFT JOIN dela_has_spretnosti ON dela.iddela = dela_has_spretnosti.iddela 
+        LEFT JOIN spretnosti ON dela_has_spretnosti.idspretnosti = spretnosti.idspretnosti 
+        INNER JOIN nivojiizobrazbe nivojiizobrazbe ON nivojiizobrazbe.idnivoja = dela.idizobrazbe
+        INNER JOIN podrocjapodjetji ON podrocjapodjetji.idpodrocja = dela.idpodrocja INNER JOIN trajanje ON trajanje.idtrajanja = dela.idtrajanja
+        INNER JOIN delovnik ON delovnik.iddelovnika = dela.iddelovnika 
+        INNER JOIN vrste_plac ON vrste_plac.idplace = dela.idplace 
+        INNER JOIN dela_opozorila ON dela.iddela = dela_opozorila.iddela 
+        WHERE dela.opozorjen IS NULL GROUP BY dela.iddela ORDER BY dela.iddela DESC LIMIT 20 OFFSET ?;`
+            ,[(stranvalue-1) * 20],function (err,results,fields) {
             if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
             else {
                 data.pagedata.prijavljenadela = results;
@@ -55,11 +67,14 @@ router.get('/neprimerna-dela',function(request,response) {
 
                 if (id_dela.length == 0) id_dela = [''];
 
-                connection.query("SELECT iddela,dela_opozorila.iddelavca,besedilo_prijave,ime,priimek FROM dela_opozorila INNER JOIN delavci ON dela_opozorila.iddelavca = delavci.iddelavca WHERE iddela IN(?);",[id_dela],function(err,results,fields) {
-                    console.log(err);
+                connection.query(
+                `SELECT iddela,dela_opozorila.iddelavca,besedilo_prijave,ime,priimek 
+                 FROM dela_opozorila 
+                 INNER JOIN delavci ON dela_opozorila.iddelavca = delavci.iddelavca 
+                 WHERE iddela IN(?);`
+                 ,[id_dela],function(err,results,fields) {
                     if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                     else {
-                    console.log(results);
                     
                     for (let i=0;i < data.pagedata.prijavljenadela.length; i++) {
                         data.pagedata.prijavljenadela[i].prijave = [];
@@ -94,12 +109,21 @@ router.get('/prijavljeni-delavci',function(request,response) {
         if (request.query.page == undefined || request.query.page == 0 || request.query.page == '') stranvalue = 1;
         data.pagedata.page = stranvalue;
 
-        connection.query("SELECT DISTINCT odgovor_delavca,delavci.iddelavca,epostapotrjena,eposta,ime,priimek,datumrojstva,telefon,kratekopis,opozorjen,admin_pojasnilo FROM delavci INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delavci.iddelavca WHERE opozorjen IS NULL OR odgovor_delavca IS NOT NULL ORDER BY delavci.iddelavca LIMIT 20 OFFSET ?;",[(stranvalue-1) * 20],function (err,results,fields) {
+        connection.query(
+            `SELECT DISTINCT odgovor_delavca,delavci.iddelavca,epostapotrjena,eposta,ime,priimek,datumrojstva,telefon,kratekopis,opozorjen,admin_pojasnilo 
+            FROM delavci 
+            INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delavci.iddelavca 
+            WHERE opozorjen IS NULL OR odgovor_delavca IS NOT NULL ORDER BY delavci.iddelavca LIMIT 20 OFFSET ?;`,[(stranvalue-1) * 20],function (err,results,fields) {
             if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
             else {
             data.pagedata.prijavljenidelavci = results;
             //jeziki
-            connection.query("SELECT delavci_has_jezik.iddelavca,naziv FROM freelance_slo.delavci_has_jezik INNER JOIN jeziki ON jeziki.idjezika = delavci_has_jezik.idjezika INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delavci_has_jezik.iddelavca;",[],function(err,results,fields) {
+            connection.query(`
+            SELECT delavci_has_jezik.iddelavca,naziv 
+            FROM freelance_slo.delavci_has_jezik 
+            INNER JOIN jeziki ON jeziki.idjezika = delavci_has_jezik.idjezika 
+            INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delavci_has_jezik.iddelavca;`
+            ,[],function(err,results,fields) {
                 if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                 else{ 
                 for (let i=0;i<data.pagedata.prijavljenidelavci.length;i++) {
@@ -113,7 +137,11 @@ router.get('/prijavljeni-delavci',function(request,response) {
                 }
                 
                 // spretnosti
-                connection.query("SELECT DISTINCT delavci_has_spretnosti.iddelavca,naziv FROM delavci_has_spretnosti INNER JOIN spretnosti ON delavci_has_spretnosti.idspretnosti = spretnosti.idspretnosti INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delavci_has_spretnosti.iddelavca;",[],function(err,results,fields) {
+                connection.query(`
+                SELECT DISTINCT delavci_has_spretnosti.iddelavca,naziv 
+                FROM delavci_has_spretnosti 
+                INNER JOIN spretnosti ON delavci_has_spretnosti.idspretnosti = spretnosti.idspretnosti 
+                INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delavci_has_spretnosti.iddelavca;`,[],function(err,results,fields) {
                     if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                     else{ 
                     for (let i=0;i<data.pagedata.prijavljenidelavci.length;i++) {
@@ -125,7 +153,10 @@ router.get('/prijavljeni-delavci',function(request,response) {
                         }
                     }
                     //delovne izkusnje
-                connection.query("SELECT delovneizkusnje.iddelavca,nazivpodjetja,imemesta,datumzacetka,datumkonca,opisdela FROM delovneizkusnje INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delovneizkusnje.iddelavca;",[],function(err,results,fields) {
+                connection.query(
+                    `SELECT delovneizkusnje.iddelavca,nazivpodjetja,imemesta,datumzacetka,datumkonca,opisdela 
+                    FROM delovneizkusnje 
+                    INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = delovneizkusnje.iddelavca;`,[],function(err,results,fields) {
                     if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                     else {
                         for (let i=0;i<data.pagedata.prijavljenidelavci.length;i++) {
@@ -139,13 +170,16 @@ router.get('/prijavljeni-delavci',function(request,response) {
                             }
                         }
 
-                    connection.query("SELECT DISTINCT izobrazba.iddelavca,izobrazba.naziv,ustanova,opis,nivojiizobrazbe.naziv AS nivoizobrazbe,datumzacetka,datumkonca FROM izobrazba INNER JOIN nivojiizobrazbe ON nivojiizobrazbe.idnivoja = izobrazba.idnivoja INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = izobrazba.iddelavca;",[],function(err,results,fields) {
+                    connection.query(
+                    `SELECT DISTINCT izobrazba.iddelavca,izobrazba.naziv,ustanova,opis,nivojiizobrazbe.naziv AS nivoizobrazbe,datumzacetka,datumkonca 
+                    FROM izobrazba 
+                    INNER JOIN nivojiizobrazbe ON nivojiizobrazbe.idnivoja = izobrazba.idnivoja 
+                    INNER JOIN delavci_opozorila ON delavci_opozorila.iddelavca = izobrazba.iddelavca;`,[],function(err,results,fields) {
                     if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                     else {
                         for (let i=0;i<data.pagedata.prijavljenidelavci.length;i++) {
                             data.pagedata.prijavljenidelavci[i].izobrazba = [];
                             for (let j = 0; j < results.length; j++) {
-                                console.log(results[j]);
                                 if (data.pagedata.prijavljenidelavci[i].iddelavca == results[j].iddelavca) {
                                     results[j].datumzacetka = moment(results[j].datumzacetka).format('yyyy-MM-DD');
                                     results[j].datumkonca = moment(results[j].datumkonca).format('yyyy-MM-DD');
@@ -154,7 +188,12 @@ router.get('/prijavljeni-delavci',function(request,response) {
                             }
                         }
 
-                        connection.query("SELECT delavci_opozorila.iddelavca,podjetje.idpodjetja,besedilo_prijave,naziv,vrstepodjetji.ime FROM freelance_slo.delavci_opozorila INNER JOIN podjetje ON podjetje.idpodjetja = delavci_opozorila.idpodjetja INNER JOIN vrstepodjetji ON podjetje.idvrste = vrstepodjetji.idvrste;",[],function(err,results,fields) {
+                        connection.query(
+                        `SELECT delavci_opozorila.iddelavca,podjetje.idpodjetja,besedilo_prijave,naziv,vrstepodjetji.ime 
+                        FROM freelance_slo.delavci_opozorila 
+                        INNER JOIN podjetje ON podjetje.idpodjetja = delavci_opozorila.idpodjetja 
+                        INNER JOIN vrstepodjetji ON podjetje.idvrste = vrstepodjetji.idvrste;`
+                        ,[],function(err,results,fields) {
                             //send data to page
                             if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                             else {
@@ -166,8 +205,6 @@ router.get('/prijavljeni-delavci',function(request,response) {
                                     }
                                 }
                             }
-
-                            console.log(data.pagedata.prijavljenidelavci);
                             response.render("./admin/opozorjeni-delavci.ejs",data);
                             }
                         });
@@ -202,8 +239,16 @@ router.get('/prijavljena-podjetja',function(request,response) {
     if (request.query.page == undefined || request.query.page == 0 || request.query.page == '') stranvalue = 1;
     data.pagedata.page = stranvalue;
 
-    connection.query("SELECT DISTINCT podjetje.idpodjetja,naziv,naslov,eposta,telefonska,datum_ustanovitve,imepodrocja,velikostipodjetji.velikost,odgovor_podjetja,admin_pojasnilo,epostapotrjena FROM podjetje LEFT JOIN velikostipodjetji ON  podjetje.velikost = velikostipodjetji.idvelikosti LEFT JOIN podrocjapodjetji ON podjetje.podrocje = podrocjapodjetji.idpodrocja WHERE (opozorjen IS NULL OR odgovor_podjetja IS NOT NULL) AND idpodjetja IN (SELECT idpodjetja FROM podjetja_opozorila) ORDER BY podjetje.idpodjetja LIMIT 20 OFFSET ?;",[(stranvalue-1) * 20],function(err,results,fields) {
-        console.log(err);
+    connection.query(
+        `SELECT DISTINCT podjetje.idpodjetja,naziv,naslov,eposta,telefonska,datum_ustanovitve,imepodrocja,velikostipodjetji.velikost,odgovor_podjetja,admin_pojasnilo,epostapotrjena 
+        FROM podjetje 
+        LEFT JOIN velikostipodjetji ON podjetje.velikost = velikostipodjetji.idvelikosti 
+        LEFT JOIN podrocjapodjetji ON podjetje.podrocje = podrocjapodjetji.idpodrocja 
+        WHERE (opozorjen IS NULL OR odgovor_podjetja IS NOT NULL) 
+        AND idpodjetja IN (SELECT idpodjetja FROM podjetja_opozorila) 
+        ORDER BY podjetje.idpodjetja 
+        LIMIT 20 OFFSET ?;`
+        ,[(stranvalue-1) * 20],function(err,results,fields) {
         if (err) response.render("napaka",{napake:["Napaka na strežniku!"]});
         else {
             data.pagedata.podjetja = results;
@@ -217,7 +262,6 @@ router.get('/prijavljena-podjetja',function(request,response) {
                             data.pagedata.podjetja[i].prijave.push(results[j]);
                         }
                     }
-                    console.log(data.pagedata.podjetja[i].prijave) 
                 }
 
                 for (let i=0;i< data.pagedata.podjetja.length; i++) {

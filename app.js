@@ -2,9 +2,7 @@ const mysql = require('mysql');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const moment = require('moment');
 //FILE UPLOAD CONFIGS - PREDELAJ DA JE SAMO ZA SLIKE/DOKUMENTE, manj specifični pogoji
-const multer = require("multer");
 const path = require('path');
 const http = require('http');
 

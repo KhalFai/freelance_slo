@@ -28,7 +28,6 @@ function odstraniDelo(item) {
 
             openStatus(status,"Delo je odstranjeno.","alert-success");
             document.getElementById("delo-"+iddela).before(status);
-            //remove div
             document.getElementById("delo-"+iddela).parentNode.removeChild(document.getElementById("delo-"+iddela));
         }
     });

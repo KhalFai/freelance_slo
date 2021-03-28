@@ -1,4 +1,3 @@
-//OSNOVNE INFORMACIJE
 function posodobiInfo() {
     let status = document.getElementById("status");
 
@@ -59,8 +58,6 @@ function posodobiInfo() {
     });
 }
 
-//CV
-//Kratekopis
 function posljiOpis() {
     let status = document.getElementById("status");
     let kratekopis = document.getElementById("kratekopis").value;
@@ -99,7 +96,6 @@ function kratekopisCounter() {
     }
 };
 
-//Spretnosti
 function izbrisiSpretnost(item) {
     let status = document.getElementById("status");
     let idspretnosti = item.id.substring(10);
@@ -187,8 +183,6 @@ function dodajSpretnost(item) {
         }
     });
 }
-
-//JEZIKI
 
 function izbrisiJezik(item) {
     let idjezika = item.id.substring(6);
@@ -281,7 +275,7 @@ function dodajJezik(item) {
         }
     });
 }
-//izobrazba
+
 function izobrazbaCounter() {
     document.getElementById("opisizobrazbe-length").innerText = document.getElementById("opisizobrazbe").value.length + '/500';
     if (document.getElementById("opisizobrazbe").value.length > 500) {
@@ -436,8 +430,6 @@ function odstraniIzobrazbo(item) {
     });
 }
 
-//izkusnje
-
 function dodajIzkusnjo(item) {
     let status = document.getElementById("status");
     let izkusnja = {
@@ -452,17 +444,14 @@ function dodajIzkusnjo(item) {
             openStatus(status,"Obrazec ni popolnoma izpolnjen.","alert-warning");
             document.getElementById("izkusnjeform").prepend(status);
     }
-    //zacetek konec
     else if (Date.parse(izkusnja.datumzacetka) > Date.parse(izkusnja.datumkonca)) {
         openStatus(status,"Začetek mora priti pred koncem delovne izkušnje.","alert-danger");
         document.getElementById("izkusnjeform").prepend(status);
     }
-    //zacetek cez trenuten datum
     else if (Date.now() < Date.parse(izkusnja.datumzacetka)) {
         openStatus(status,"Začetek dela ne sme slediti trenutnemu datumu.","alert-danger");
         document.getElementById("izkusnjeform").prepend(status);
     }
-    //naziv podjetja in mesto v podjetju
     else if (!/^[1-9a-zžščćđA-ZŽŠĐČĆ. -,:;]+$/.test(izkusnja.nazivpodjetja) || !/^[1-9a-zžščćđA-ZŽŠĐČĆ. -,:;]+$/.test(izkusnja.imemesta)) {
         openStatus(status,"Ime podjetja in mesto lahko vseubjeta samo črke, številke in ločila.","alert-danger");
         document.getElementById("izkusnjeform").prepend(status);

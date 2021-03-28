@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router();
 
-//SPRETNOSTI
 router.post('/izbrisi-spretnost',function(request,response) {
 	let connection = request.app.get('connection');
 	idspretnosti = request.body.idspretnosti;
@@ -39,12 +38,11 @@ router.post('/isci-spretnost',function(request,response) {
 	});
 });
 
-//JEZIKI
 router.post('/izbrisi-jezik',function(request,response) {
 	let connection = request.app.get('connection');
 	idjezika = request.body.idjezika;
 	connection.query("SELECT idjezika FROM delavci_has_jezik WHERE idjezika = ? AND iddelavca = ?;",[idjezika,request.session.userid],function(err,results,fields) { 
-	if (err) {console.log(err);response.send({uspelo:false});}
+	if (err) {response.send({uspelo:false});}
 	else if (results == undefined || results.length == 0) response.send({uspelo:"napacna-vrednost"});
 	else {
 	connection.query("DELETE FROM delavci_has_jezik WHERE idjezika = ? AND iddelavca = ?;",[idjezika,request.session.userid],function(err,results,fields) { 
@@ -59,7 +57,7 @@ router.post('/dodaj-jezik',function(request,response) {
 	let connection = request.app.get('connection');
 	idjezika = request.body.idjezika;
 	connection.query("SELECT idjezika FROM delavci_has_jezik WHERE iddelavca = ? AND idjezika=?;",[request.session.userid,idjezika],function(err,results,fields) { 
-	if (err) {console.log(err); response.send({uspelo:false});}
+	if (err) {response.send({uspelo:false});}
 	else if (results.length > 0) response.send({uspelo:"duplikat"});
 	else connection.query("INSERT INTO delavci_has_jezik VALUES(?,?);",[request.session.userid,idjezika],function(err,results,fields) { 
 		if (err) response.send({uspelo:false});
@@ -77,7 +75,7 @@ router.post('/isci-jezik',function(request,response) {
 	});
 });
 
-//IZOBRAZBA
+
 router.post('/dodaj-izobrazbo',function(request,response) {
 	let connection = request.app.get('connection');
 	if (request.body.zacetek > Date.now()) response.send("zacetek-narobe");
@@ -90,7 +88,7 @@ router.post('/dodaj-izobrazbo',function(request,response) {
 		connection.query("SELECT COUNT(idizobrazbe) as stetje FROM izobrazba WHERE iddelavca = ?",[request.session.userid],function(err,results,fields) {
 		if (results[0].stetje < 10) {
 		connection.query("INSERT INTO izobrazba(iddelavca,naziv,ustanova,idnivoja,datumzacetka,datumkonca,opis) VALUES (?,?,?,?,?,?,?);",[request.session.userid,request.body.naziv,request.body.ustanova,request.body.nivoIzobrazbe,request.body.zacetek,request.body.konec,request.body.opis],function(err,results,fields) { 
-		if (err) {response.send({uspelo:false});console.log(err);}
+		if (err) {response.send({uspelo:false});}
 		else {
 		connection.query("SELECT MAX(idizobrazbe) as stetje FROM izobrazba WHERE iddelavca = ?",[request.session.userid],function(err,results,fields) {
 
@@ -121,24 +119,24 @@ router.post('/izbrisi-izobrazbo',function(request,response) {
 	});
 });
 
-//IZKUSNJE
+
 router.post('/dodaj-izkusnjo',function(request,response) {
 	let connection = request.app.get('connection');
-    //datumzacetka mora biti manjši od trenutnega datuma
+
     if (request.body.datumzacetka > Date.now()) response.send({uspelo:"zacetek-narobe"})
-    //datumzacetka mora biti manjši od datuma konca
+
     else if (Date.parse(request.body.datumzacetka) > Date.parse(request.body.datumkonca)) response.send({uspelo:"zacetek-konec"})
-    //ime mesta, naziv podjetja morajo vsebovati samo številke in črke
+
     else if (
         !/^[1-9a-zžščćđA-ZŽŠĐČĆ. -,:;]+$/.test(request.body.nazivpodjetja) &&
         !/^[1-9a-zžščćđA-ZŽŠĐČĆ. -,:;]+$/.test(request.body.imemesta)
     ) response.send({uspelo:"napacne-crke"});
-    //opis ima lahko karkoli
+
     else {
     connection.query("SELECT COUNT(iddelovneizkusnje) as stetje FROM delovneizkusnje WHERE iddelavca = ?",[request.session.userid],function(err,results,fields) {
     if (results[0].stetje < 20) {
     connection.query("INSERT INTO delovneizkusnje(iddelavca,nazivpodjetja,imemesta,datumzacetka,datumkonca,opisdela) VALUES (?,?,?,?,?,?);",[request.session.userid,request.body.nazivpodjetja,request.body.imemesta,request.body.datumzacetka,request.body.datumkonca,request.body.opisdela],function(err,results,fields) { 
-    if (err) {response.send({uspelo:false});console.log(err);}
+    if (err) {response.send({uspelo:false});}
     else {
     connection.query("SELECT MAX(iddelovneizkusnje) as zadnjiid FROM delovneizkusnje WHERE iddelavca = ?",[request.session.userid],function(err,results,fields) {
 

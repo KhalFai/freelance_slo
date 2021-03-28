@@ -5,59 +5,15 @@ const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'freelanceslopotrditev@gmail.com', //zamenjaj s freelanceslo eposto, kodo zapakiraj zraven REGISTER inserta in jo daj v tole funkcijo
+    user: 'freelanceslopotrditev@gmail.com',
     pass: 'geslo1231'
   }
 });
 
-function posljiEpostoPotrditev(eposta,id,connection) {
+const D_mailObject = require.main.require('./mail/mail-delavci.js');
+const passgen = require.main.require('./misc/password-generator.js');
 
-let potrditvenakoda = Math.floor(1000+Math.random()*8999);
-connection.query("UPDATE delavci SET potrditvenakoda = ? WHERE iddelavca = ?;",[potrditvenakoda,id],function(err,results,fields) {
- if (err) console.log(err);
- else {
- let nastavitvePoste = {
-  from: 'freelanceslopotrditev@gmail.com',
-  to: eposta,
-  subject: 'Potrdite vaš FreelanceSLO račun!',
-  text: 'Vnesite sledečo kodo v polje \"Potrditvena koda\": '+potrditvenakoda+' in vašemu računu zagotovite pristnost!'
-};
-
-transporter.sendMail(nastavitvePoste, function(error, info){
-  if (error) {
-    console.log(error);
-  }
-});}
-})
-}
-
-function generirajGeslo(dolzina) {
-    let randomZnaki = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for ( var i = 0; i < dolzina; i++ ) {
-        result += randomZnaki.charAt(Math.floor(Math.random() * randomZnaki.length));
-    }
-    return result;
-}
-
-function posljiEpostoGeslo(eposta,nadomestnoGeslo,connection) {
-
- let nastavitvePoste = {
-  from: 'freelanceslopotrditev@gmail.com',
-  to: eposta,
-  subject: 'Nadomestno geslo za vaš račun.',
-  text: 'Vaše začasno (potrditveno) geslo je: "'+nadomestnoGeslo+'" . Vnesite ga v primerno polje na spletni strani, da zamenjate geslo.'
-};
-
-transporter.sendMail(nastavitvePoste, function(error, info){
-  if (error) {
-    console.log(error);
-  }
-});
-
-}
-
-const express = require('express')
+const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
@@ -68,8 +24,7 @@ router.post('/login',function(request,response) {
 	let hash_primerjava = undefined;
 
 	connection.query("SELECT eposta FROM delavci_eposta_blacklist WHERE eposta = ?",[request.body.eposta],function(err,results,fields) {	
-		console.log(err);
-		if (err) {console.log(err);napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.");}
+		if (err) {napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.");}
 		else if (results.length > 0) {response.render("./delavci/login-register.ejs",{napake:["Administrator je vaš račun dokončno odstranil."]});}
 		else connection.query('SELECT geslo FROM delavci WHERE eposta = ?;',[eposta],function(err,results,fields) {
 		if (results.length > 0) {hash_primerjava = results[0].geslo;
@@ -107,30 +62,29 @@ router.post('/register',function(request,response) {
 		if (err) response.render("napaka",{napake:["Napaka na strežniku."]});
 		geslo_hashed = hash;
 
-	//poglej če je treba omejiti dolžine stringov za registracijo, image upload
-	//preveri napake
+
 	if (!ime || !priimek || !geslo || !eposta) 
 	napake.push("Eno ali več polj je praznih. Prosim vnesite podatke v vsa polja.");
 
 	if (! /^[a-zžščćđA-ZŽŠĐČĆ]+$/.test(ime) || ! /^[a-zđščćžA-ZĐŠČĆŽ]+$/.test(priimek)) 
-	napake.push("Ime in priimek lahko vsebujeta samo črke."); //preveri če ima ime posebne znake
+	napake.push("Ime in priimek lahko vsebujeta samo črke."); 
 
 	if (! /^[A-ZĐŠČĆŽ]/.test(priimek) || ! /^[A-ZĐŠČĆŽ]/.test(ime)) 
-	napake.push("Ime in priimek morata imeti veliki začetnici."); //preveri če imata ime in priimek veliki začetnici
+	napake.push("Ime in priimek morata imeti veliki začetnici."); i
 
 	if (! /[\w-]+@([\w-]+\.)+[\w-]+/.test(eposta)) 
-	napake.push("E-poštni naslov ni pravilno vnesen."); // preveri če ima e-pošta primeren format
+	napake.push("E-poštni naslov ni pravilno vnesen."); 
 
-	if (! /^(?=.*?[A-ZČĆŽĐ])(?=.*?[a-zčćžđš])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(geslo)) //preveri če je geslo dolgo vsaj 8 znakov
+	if (! /^(?=.*?[A-ZČĆŽĐ])(?=.*?[a-zčćžđš])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(geslo))
 	napake.push("Geslo ne ustreza pogojem, mora vsebovati vsaj eno veliko črko, majhno črko, številko, poseben znak in mora biti dolgo vsaj 8 mest.");
 	
 	else connection.query("SELECT eposta FROM delavci_eposta_blacklist WHERE eposta = ?",[request.body.eposta],function(err,results,fields) {	
-	console.log(err);
-	if (err) {console.log(err);napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.");}
+
+	if (err) {napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.");}
 	else if (results.length > 0) {response.render("./delavci/login-register.ejs",{napake:["Administrator je vaš račun dokončno odstranil."]});}
 
 	else connection.query ('SELECT eposta FROM delavci WHERE eposta = ?;',[eposta],function(err,results,fields) { //preveri če je e-pošta še neregistrirana
-	if (err) {console.log(err);napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.")};
+	if (err) {napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.")};
 	if (results.length > 0) napake.push("Na en e-postni naslov je lahko registriran samo en račun.");
 
 	if (napake.length) {response.render("./delavci/login-register.ejs",{napake:napake})}
@@ -142,7 +96,7 @@ router.post('/register',function(request,response) {
 					if (err) response.render("./delavci/login-register.ejs",{napake:["Napaka na strežniku."]});
 					else {
 						request.session.userid = results[0].iddelavca;
-						posljiEpostoPotrditev(eposta,results[0].iddelavca,connection);
+						D_mailObject.postaPotrditev(eposta,results[0].iddelavca,connection,transporter);
 						response.redirect('/delavci/nav/feed');
 					}
 				});
@@ -180,7 +134,7 @@ router.get('/eposta-spet',function(request,response) {
             response.end();
         }
         else {
-            posljiEpostoPotrditev(results[0].eposta,request.session.userid,connection);
+            D_mailObject.postaPotrditev(results[0].eposta,request.session.userid,connection,transporter);
             response.send();
         }
     });
@@ -237,8 +191,7 @@ router.post('/kratek-opis',function(request,response) {
 
 router.post('/poslji-potrditveno',function(request,response) {
 	let connection = request.app.get('connection');
-	console.log(request.body.eposta);
-	let nadomestnoGeslo = generirajGeslo(10);
+	let nadomestnoGeslo = passgen.generate(10);
 	let nadomestno_hash;
 
 	//set geslo to a random string of characters
@@ -255,7 +208,7 @@ router.post('/poslji-potrditveno',function(request,response) {
 						if (err) response.send({uspelo:false});
 						else {
 							//send the new geslo via email
-							posljiEpostoGeslo(request.body.eposta,nadomestnoGeslo,connection);
+							D_mailObject.posljiGeslo(request.body.eposta,nadomestnoGeslo,connection,transporter);
 							response.send({uspelo:true});
 						}
 					})
@@ -313,7 +266,6 @@ router.post('/blokiranje-pritozba',function(request,response) {
 	let connection = request.app.get('connection');
 
 	connection.query("UPDATE delavci SET odgovor_delavca=? WHERE iddelavca = ?;",[request.body.pojasnilo,request.session.userid],function(err,results,fields) {
-		console.log(err);
 		if (err) response.send({uspelo:false});
 		else response.send({uspelo:true});
 	});

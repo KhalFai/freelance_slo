@@ -4,58 +4,13 @@ const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'freelanceslopotrditev@gmail.com', //zamenjaj s freelanceslo eposto, kodo zapakiraj zraven REGISTER inserta in jo daj v tole funkcijo
+    user: 'freelanceslopotrditev@gmail.com',
     pass: 'geslo1231'
   }
 });
 
-function posljiEpostoPotrditev(eposta,id,connection) {
-
-let potrditvenakoda = Math.floor(1000+Math.random()*8999);
-connection.query("UPDATE podjetje SET potrditvenakoda = ? WHERE idpodjetja = ?;",[potrditvenakoda,id],function(err,results,fields) {
- if (err) console.log(err);
- else {
- let nastavitvePoste = {
-  from: 'freelanceslopotrditev@gmail.com',
-  to: eposta,
-  subject: 'Potrdite vaš FreelanceSLO račun!',
-  text: 'Vnesite sledečo kodo v polje \"Potrditvena koda\": '+potrditvenakoda+'  in vašemu računu zagotovite pristnost!'
-};
-
-transporter.sendMail(nastavitvePoste, function(error, info){
-  if (error) {
-    console.log(error);
-  }
-});}
-})
-}
-
-function generirajGeslo(dolzina) {
-  let randomZnaki = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for ( var i = 0; i < dolzina; i++ ) {
-      result += randomZnaki.charAt(Math.floor(Math.random() * randomZnaki.length));
-  }
-  return result;
-}
-
-function posljiEpostoGeslo(eposta,nadomestnoGeslo,connection) {
-
-let nastavitvePoste = {
-from: 'freelanceslopotrditev@gmail.com',
-to: eposta,
-subject: 'Nadomestno geslo za vaš račun.',
-text: 'Vaše začasno (potrditveno) geslo je: "'+nadomestnoGeslo+'" . Vnesite ga v primerno polje na spletni strani, da zamenjate geslo.'
-};
-
-transporter.sendMail(nastavitvePoste, function(error, info){
-if (error) {
-  console.log(error);
-}
-});
-
-}
-
+const P_mailObject = require.main.require('./mail/mail-podjetja.js');
+const passgen = require.main.require('./misc/password-generator.js');
 
 const express = require('express')
 const router = express.Router();
@@ -78,32 +33,29 @@ router.post('/register',function(request,response) {
 	else {
     crypted_geslo = hash;
 
-    //validate data
+
     if (!eposta || !geslo || !ime_podjetja || !vrsta_podjetja) 
 	napake.push("Eno ali več polj je praznih. Prosim vnesite podatke v vsa polja.");
 
-    //validate email
     if (! /[\w-]+@([\w-]+\.)+[\w-]+/.test(eposta)) 
-    napake.push("E-poštni naslov ni pravilno vnesen."); // preveri če ima e-pošta primeren format
+    napake.push("E-poštni naslov ni pravilno vnesen."); 
     
     if (! /^[a-zžščćđA-ZŽŠĐČĆ0-9 ]+$/.test(ime_podjetja)) 
-	napake.push("Ime podjetja lahko vsebuje samo črke in številke."); //preveri če ima ime posebne znake
+	napake.push("Ime podjetja lahko vsebuje samo črke in številke.");
 
-	if (! /^(?=.*?[A-ZČĆŽĐ])(?=.*?[a-zčćžđš])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(geslo)) //preveri če je geslo dolgo vsaj 8 znakov
+	if (! /^(?=.*?[A-ZČĆŽĐ])(?=.*?[a-zčćžđš])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(geslo)) 
 	napake.push("Geslo ne ustreza pogojem, mora vsebovati vsaj eno veliko črko, majhno črko, številko, poseben znak in mora biti dolgo vsaj 8 mest.");
 	
 	connection.query("SELECT naslov FROM podjetja_eposta_blacklist WHERE naslov = ?",[request.body.eposta],function(err,results,fields) {
-		console.log(err);
 		if (err) response.render("napaka",{napake:['Napaka na strežniku.']});
 		else if (results.length > 0) {
 			connection.query('SELECT ime FROM vrstepodjetji;',[],function(err,results,fields) {
-				console.log(err);
 				if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
 				else response.render("./podjetja/login-register.ejs",{vrstepodjetji:results,napake:["Administrator je vaš račun dokončno odstranil."]});
 			});
 	}
-	else connection.query ('SELECT eposta FROM podjetje WHERE eposta = ?;',[eposta],function(err,results,fields) { //preveri če je e-pošta še neregistrirana
-		if (err) {console.log(err);napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.")};
+	else connection.query ('SELECT eposta FROM podjetje WHERE eposta = ?;',[eposta],function(err,results,fields) {
+		if (err) {napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.")};
 		if (results.length > 0) {
 			
 		napake.push("Na en e-postni naslov je lahko registriran samo en račun."); 
@@ -121,12 +73,12 @@ router.post('/register',function(request,response) {
         else {
         if (results.length > 0 && napake.length <= 0) {
             connection.query("INSERT INTO podjetje(naziv,idvrste,geslo,eposta) VALUES (?,?,?,?);",[ime_podjetja,results[0].idvrste,crypted_geslo,eposta],function(err,results,fields) {
-                if (err) {response.render("napaka",{napake:["Napaka na strežniku!"]}); console.log(err);}
+                if (err) {response.render("napaka",{napake:["Napaka na strežniku!"]});}
                 connection.query("SELECT idpodjetja FROM podjetje WHERE eposta = ?;",[eposta],function(err,results,fields) {
 					if (err) {response.render("napaka",{napake:["Napaka na strežniku!"]});}
 					else {
 						request.session.podjetjeid = results[0].idpodjetja;
-						posljiEpostoPotrditev(eposta,results[0].idpodjetja,connection);
+						P_mailObject.postaPotrditev(eposta,results[0].idpodjetja,connection,transporter);
 						response.redirect('/podjetja/nav/feed');
 					}
 				});
@@ -152,11 +104,9 @@ router.post('/login',function(request,response) {
 	let hash_primerjava = undefined;
 
 	connection.query("SELECT naslov FROM podjetja_eposta_blacklist WHERE naslov = ?",[request.body.eposta],function(err,results,fields) {
-	console.log(err);
 	if (err) response.render("napaka",{napake:['Napaka na strežniku.']});
 	else if (results.length > 0) {
 		connection.query('SELECT ime FROM vrstepodjetji;',[],function(err,results,fields) {
-			console.log(err);
 			if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
 			else response.render("./podjetja/login-register.ejs",{vrstepodjetji:results,napake:["Administrator je vaš račun dokončno odstranil."]});
 		});
@@ -172,7 +122,6 @@ router.post('/login',function(request,response) {
 			}
 			else {
 				connection.query('SELECT ime FROM vrstepodjetji;',[],function(err,results,fields) {
-					console.log(err);
 					if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
 					else response.render("./podjetja/login-register.ejs",{vrstepodjetji:results,napake:["Napačno geslo. Poskusite znova."]});
 				});
@@ -181,7 +130,6 @@ router.post('/login',function(request,response) {
 		}
 		else {
 			connection.query('SELECT ime FROM vrstepodjetji;',[],function(err,results,fields) {
-				console.log(err);
 				if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
 				else response.render("./podjetja/login-register.ejs",{vrstepodjetji:results,napake:["Račun s tem e-poštnim naslovom ne obstaja, poskusite znova."]});
 			});
@@ -194,9 +142,9 @@ router.post('/login',function(request,response) {
 router.post('/osnovni-podatki',function(request,response) {
   let connection = request.app.get('connection');
   
-  if (! /^[a-zžščćđA-ZŽŠĐČĆ0-9 ]+$/.test(request.body.naziv)) response.send({uspelo:"narobe-naziv"})//validate naziv
+  if (! /^[a-zžščćđA-ZŽŠĐČĆ0-9 ]+$/.test(request.body.naziv)) response.send({uspelo:"narobe-naziv"})
   else {
-  connection.query("SELECT idvrste FROM vrstepodjetji WHERE idvrste=?;", [request.body.vrsta], function(err,results,fields) {//validate vrstopodjetja
+  connection.query("SELECT idvrste FROM vrstepodjetji WHERE idvrste=?;", [request.body.vrsta], function(err,results,fields) {
   if (err) response.send({uspelo:false});
   else if (results.length > 0) {
   connection.query("UPDATE podjetje SET naziv=?,idvrste=? WHERE idpodjetja = ?;", [request.body.naziv,request.body.vrsta,request.session.podjetjeid], function(err,results,fields) {
@@ -213,16 +161,16 @@ router.post('/osnovni-podatki',function(request,response) {
 router.post('/podatki-podjetja',function(request,response) {
   let connection = request.app.get('connection');
   if (request.body.naslov == '' || request.body.telefonska == '' || request.body.datumzacetka == '') response.send({uspelo:'ni-podatkov'});
-  //validate velikost
+
   else connection.query("SELECT idvelikosti FROM velikostipodjetji WHERE idvelikosti = ?;", [request.body.velikost], function(err,results,fields) {
   if (err) response.send({uspelo:false});
   else {
     if (results.length > 0) {
-      //validate naslov
+
       if (! /^[a-zžščćđA-ZŽŠĐČĆ0-9 ]+$/.test(request.body.naslov)) response.send({uspelo:"narobe-naslov"});
-      //validate telefonska
+
       else if (! /^(?=.{9})[0-9]{3}-{1}[0-9]{3}-{1}[0-9]{3}$/.test(request.body.telefonska)) response.send({uspelo:"narobe-telefonska"});
-      //validate datumzacetka
+
       else if (Date.parse(request.body.datumzacetka) > Date.now()) response.send({uspelo:"datum-narobe"})
 
       else {
@@ -243,7 +191,7 @@ router.post('/isci-podrocje',function(request,response) {
   if (request.body.iskanje.length > 0) { 
   if (! /^[a-zžščćđA-ZŽŠĐČĆ0-9 ]+$/.test(request.body.iskanje)) response.send({uspelo:"narobe-iskanje"});
   else {
-    connection.query("SELECT imepodrocja,idpodrocja FROM podrocjapodjetji WHERE imepodrocja LIKE ?;", [request.body.iskanje+'%'], function(err,results,fields) {//validate vrstopodjetja 
+    connection.query("SELECT imepodrocja,idpodrocja FROM podrocjapodjetji WHERE imepodrocja LIKE ?;", [request.body.iskanje+'%'], function(err,results,fields) {
       if (err) response.send({uspelo:false});
       else {
         response.send({uspelo:true, podrocja:results});
@@ -257,7 +205,7 @@ router.post('/spremeni-podrocje',function(request,response) {
 
   if (! /^[0-9]+$/.test(request.body.idpodrocja)) response.send({uspelo:"narobe-dodaj"});
   else {
-  connection.query("UPDATE podjetje SET podrocje=? WHERE idpodjetja=?;", [request.body.idpodrocja,request.session.podjetjeid], function(err,results,fields) {//validate vrstopodjetja
+  connection.query("UPDATE podjetje SET podrocje=? WHERE idpodjetja=?;", [request.body.idpodrocja,request.session.podjetjeid], function(err,results,fields) {
     if (err) response.send({uspelo:false});
     else {
       response.send({uspelo:true})
@@ -271,7 +219,6 @@ router.post('/verify-email', function(request,response) {
 	if (/^[0-9]*$/.test(request.body.potrditvenakoda))
 	connection.query('SELECT potrditvenakoda FROM podjetje WHERE idpodjetja = ?',[request.session.podjetjeid],function(err,results,fields) {
 		if (results.length > 0) {
-      console.log(results[0]);
       if (results[0].potrditvenakoda == request.body.potrditvenakoda) {
 				connection.query('UPDATE podjetje SET epostapotrjena=1 WHERE idpodjetja = ?',[request.session.podjetjeid],function(err,results,fields) {
 					response.send({uspelo:true});
@@ -291,7 +238,7 @@ router.get('/eposta-spet',function(request,response) {
             response.end();
         }
         else {
-            posljiEpostoPotrditev(results[0].eposta,request.session.podjetjeid,connection);
+			P_mailObject.postaPotrditev(request.body.eposta,results[0].idpodjetja,connection,transporter);
             response.send({uspelo:true});
         }
     });
@@ -317,25 +264,25 @@ router.post('/izbris-racuna',function(request,response) {
 
 router.post('/poslji-potrditveno',function(request,response) {
 	let connection = request.app.get('connection');
-	console.log(request.body.eposta);
-	let nadomestnoGeslo = generirajGeslo(10);
+	let nadomestnoGeslo = passgen.generate(10);
 	let nadomestno_hash;
 
-	//set geslo to a random string of characters
 	bcrypt.hash(nadomestnoGeslo, 5, function(err, hash) {
 		if (err) response.send({uspelo:false});
 		else {
 			nadomestno_hash = hash;
 			
-			connection.query("SELECT eposta FROM podjetje WHERE eposta = ?;",[request.body.eposta],function(err,results,fields) {
+			connection.query("SELECT idpodjetja,eposta FROM podjetje WHERE eposta = ?;",[request.body.eposta],function(err,results,fields) {
 				if (err) response.send({uspelo:false});
 				else if (results.length < 1) response.send({uspelo:"eposte-ni"})
 				else {
+					
+					let idpodjetje = results[0].idpodjetja;
+
 					connection.query("UPDATE podjetje SET geslo = ? WHERE eposta = ?;",[nadomestno_hash,request.body.eposta],function(err,results,fields) {
 						if (err) response.send({uspelo:false});
 						else {
-							//send the new geslo via email
-							posljiEpostoGeslo(request.body.eposta,nadomestnoGeslo,connection);
+							P_mailObject.posljiGeslo(request.body.eposta,connection,transporter);
 							response.send({uspelo:true});
 						}
 					})
@@ -398,7 +345,6 @@ router.post('/blokiranje-pritozba',function(request,response) {
 	let connection = request.app.get('connection');
 
 	connection.query("UPDATE podjetje SET odgovor_podjetja=? WHERE idpodjetja = ?;",[request.body.pojasnilo,request.session.podjetjeid],function(err,results,fields) {
-		console.log(err);
 		if (err) response.send({uspelo:false});
 		else response.send({uspelo:true});
 	});

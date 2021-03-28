@@ -156,24 +156,22 @@ function posljiPodrobnosti(item) {
     datumzacetka:document.getElementById("datumzacetka").value
     }
 
-    //polja
     if (podatki.velikost == "" || podatki.velikost == undefined || podatki.naslov == "" || podatki.naslov == undefined || podatki.telefonska == undefined || podatki.telefonska == "" || 
         podatki.datumzacetka == "" || podatki.datumzacetka == undefined) {
             openStatus(status,"Obrazec ni popolnoma izpolnjen","alert-warning");
             document.getElementById("podjetjeform").prepend(status);
     }
 
-    //datum
     else if (Date.parse(podatki.datumzacetka) > Date.now()) {
         openStatus(status,"Datum ustanovitve ne sme biti večji od trenutnega datuma.","alert-danger");
         document.getElementById("podjetjeform").prepend(status);
     }
-    //telefonska
+
     else if (!validatePhoneNumber(document.getElementById("telefonska"))) {
         openStatus(status,"Telefonska številka ne sledi formatu.","alert-danger");
         document.getElementById("podjetjeform").prepend(status);
     }
-    //naslov
+
     else if (!validateCompanyName(document.getElementById("naslov"))) {
         openStatus(status,"Naslov lahko vsebuje samo številke in črke.","alert-danger");
         document.getElementById("podjetjeform").prepend(status);
