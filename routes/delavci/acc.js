@@ -70,7 +70,7 @@ router.post('/register',function(request,response) {
 	napake.push("Ime in priimek lahko vsebujeta samo črke."); 
 
 	if (! /^[A-ZĐŠČĆŽ]/.test(priimek) || ! /^[A-ZĐŠČĆŽ]/.test(ime)) 
-	napake.push("Ime in priimek morata imeti veliki začetnici."); i
+	napake.push("Ime in priimek morata imeti veliki začetnici.");
 
 	if (! /[\w-]+@([\w-]+\.)+[\w-]+/.test(eposta)) 
 	napake.push("E-poštni naslov ni pravilno vnesen."); 

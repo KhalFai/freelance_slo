@@ -114,8 +114,6 @@ router.post('/dodaj-delo',function(request,response) {
 
     let iddela = undefined;
     if (request.session.podjetjeid == undefined) response.send({uspelo:"seja-narobe"})
-
-    else if (!/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(request.body.naziv) || !/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(request.body.opis)) response.send({uspelo:"naziv-opis-narobe"});
     else if (request.body.placa <= 0) response.send({uspelo:"placa-narobe"})
     else connection.query("SELECT opozorjen FROM podjetje WHERE idpodjetja=? AND opozorjen = 1",[request.session.podjetjeid],function(err,results,fields) {
       if (err) response.send({uspelo:false});

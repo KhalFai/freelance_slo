@@ -138,7 +138,7 @@ router.post('/isci-dela',function(request,response) {
 router.get('/sprejet-dela',function(request,response) {
     let connection = request.app.get('connection');
     if (request.session.userid == undefined) response.send({uspelo:"seje-ni"})
-    connection.query("SELECT iddelavca FROM delavci WHERE iddelavca = ? AND opozorjen = 1",[request.session.userid],function(err,results,fields) {
+    else connection.query("SELECT iddelavca FROM delavci WHERE iddelavca = ? AND opozorjen = 1",[request.session.userid],function(err,results,fields) {
         if (err) response.send({uspelo:false});
         else if (results.length > 0) response.send({uspelo:"opozorjen"}) 
         else connection.query(

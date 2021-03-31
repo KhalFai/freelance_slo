@@ -92,7 +92,7 @@
             <% for(izobrazba of delavec.izobrazba) {%>    
                 <div class="card mt-3 shadow-sm mb-3">
                     <div class="card-body">
-                      <h5 class="card-title"><%=izobrazba.nazivIzobrazbe%></h5>
+                      <h5 class="card-title"><%=izobrazba.naziv%></h5>
                       <h6 class="card-subtitle mb-2 text-muted"><%=izobrazba.ustanova%></h6>
                       <h6 class="card-subtitle mb-2 text-muted"><%=izobrazba.nivoizobrazbe%></h6>
                       <p class="card-text"><%=izobrazba.opis%></p>
@@ -122,9 +122,9 @@
             <%if (delavec.odgovor_delavca == undefined) {%>
             <label for="besedilo-prijave" for="prijava-razlaga-<%=delavec.iddelavca%>">Besedilo odziva:</label>
             <textarea class="form-control mb-3" name="prijava-razlaga-<%=delavec.iddelavca%>" id="prijava-razlaga-<%=delavec.iddelavca%>" type="text"></textarea>
-            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>" onclick="potrdiPrijavo(this)">Potrdi prijavo</button>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>" onclick="potrdiPrijavo(this)">Pošlji opozorilo</button>
             <%}%>
-            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>"onclick="dokoncnoPotrdi(this)">Dokončno blokiraj delavca</button>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>"onclick="dokoncnoPotrdi(this)">Izbriši račun delavca</button>
             <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=delavec.iddelavca%>" onclick="opustiPrijavo(this)">Odstrani prijavo</button>
             <a class="btn gf-admin-btn mr-2 mb-2" data-toggle="collapse" href="#collapseOdzive<%=delavec.iddelavca%>" role="button" aria-expanded="false" aria-controls="collapseOdzive<%=delavec.iddelavca%>">Pokaži odzive..</a>
         </form>

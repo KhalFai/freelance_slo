@@ -101,9 +101,9 @@
             <%if (podjetje.odgovor_podjetja == undefined) {%>
             <label for="besedilo-prijave" for="prijava-razlaga-<%=podjetje.idpodjetja%>">Besedilo odziva:</label>
             <textarea id="prijava-razlaga-<%=podjetje.idpodjetja%>" class="form-control mb-3" type="text"></textarea>
-            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=podjetje.idpodjetja%>" onclick="potrdiPrijavo(this)">Potrdi prijavo</button>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=podjetje.idpodjetja%>" onclick="potrdiPrijavo(this)">Pošlji opozorilo</button>
             <%}%>
-            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=podjetje.idpodjetja%>"onclick="dokoncnoPotrdi(this)">Dokončno blokiraj podjetje</button>
+            <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=podjetje.idpodjetja%>"onclick="dokoncnoPotrdi(this)">Izbriši račun podjetja</button>
             <button type="button" class="btn gf-admin-btn mr-2 mb-2" value="<%=podjetje.idpodjetja%>" onclick="opustiPrijavo(this)">Opusti prijavo</button>
             <a class="btn gf-admin-btn mr-2 mb-2" data-toggle="collapse" href="#collapseOdzive<%=podjetje.idpodjetja%>" role="button" aria-expanded="false" aria-controls="collapseOdzive<%=podjetje.idpodjetja%>">Pokaži odzive..</a>
             </form>

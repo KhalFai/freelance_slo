@@ -117,7 +117,6 @@ router.get('/prijavljeni-delavci',function(request,response) {
             if (err) response.render("napaka",{napake:['Napaka na strežniku.']})
             else {
             data.pagedata.prijavljenidelavci = results;
-            //jeziki
             connection.query(`
             SELECT delavci_has_jezik.iddelavca,naziv 
             FROM freelance_slo.delavci_has_jezik 
@@ -136,7 +135,6 @@ router.get('/prijavljeni-delavci',function(request,response) {
                     }
                 }
                 
-                // spretnosti
                 connection.query(`
                 SELECT DISTINCT delavci_has_spretnosti.iddelavca,naziv 
                 FROM delavci_has_spretnosti 
@@ -152,7 +150,7 @@ router.get('/prijavljeni-delavci',function(request,response) {
                             }
                         }
                     }
-                    //delovne izkusnje
+
                 connection.query(
                     `SELECT delovneizkusnje.iddelavca,nazivpodjetja,imemesta,datumzacetka,datumkonca,opisdela 
                     FROM delovneizkusnje 
@@ -194,7 +192,6 @@ router.get('/prijavljeni-delavci',function(request,response) {
                         INNER JOIN podjetje ON podjetje.idpodjetja = delavci_opozorila.idpodjetja 
                         INNER JOIN vrstepodjetji ON podjetje.idvrste = vrstepodjetji.idvrste;`
                         ,[],function(err,results,fields) {
-                            //send data to page
                             if (err) response.render("napaka",{napake:["Napaka na strežniku."]})
                             else {
                             for (let i=0;i<data.pagedata.prijavljenidelavci.length;i++) {

@@ -57,7 +57,6 @@ router.post('/zavrni-zahtevo',function(request,response) {
 router.post('/opozori-delodajalca',function(request,response) {
     let connection = request.app.get('connection');
 
-    //ce delo obstaja
     if (!/^[a-zžščćđA-ZŽŠĐČĆ0-9 .,:;-]+$/.test(request.body.admin_razlog)) response.send({uspelo:"tekst-narobe"});
     else if (request.session.adminid == undefined) response.send({uspelo:"ni-prijave"});
     else connection.query("SELECT idadmin FROM administratorji WHERE idadmin = ?",[request.session.adminid],function(err,results,fields) {
@@ -242,7 +241,6 @@ router.post('/blokiraj-podjetje',function(request,response) {
     });
     
     router.post('/dokoncno-blokiraj-podjetje',function(request,response) {
-        //NAREDI DA DELAVCI NISO VIDNI KO SO PRIJAVLJENI
         let connection = request.app.get('connection');
         
         if (request.session.adminid == undefined) response.send({uspelo:"ni-prijave"});
@@ -282,7 +280,6 @@ router.post('/blokiraj-podjetje',function(request,response) {
 });
     
     router.post('/opusti-prijavo-podjetje',function(request,response) {
-    //odstrani prijavo, set opozorjen to null
     let connection = request.app.get('connection');
     
     if (request.session.adminid == undefined) response.send({uspelo:"ni-prijave"});

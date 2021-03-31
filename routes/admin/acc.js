@@ -7,7 +7,7 @@ const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'freelanceslopotrditev@gmail.com', //zamenjaj s freelanceslo eposto, kodo zapakiraj zraven REGISTER inserta in jo daj v tole funkcijo
+    user: 'freelanceslopotrditev@gmail.com',
     pass: 'geslo1231'
   }
 });
@@ -81,7 +81,7 @@ router.post('/register',function(request,response) {
 	connection.query("SELECT naslov FROM administratorji_eposta_blacklist WHERE naslov = ?",[eposta],function(err,results,fields) {
 		if (err) response.render("./admin/login-register",{napake:["Napaka na strežniku."]});
 		else if (results.length > 0) response.render("./admin/login-register",{napake:["Vaša prijava je bila zavrnjena."]});
-		else connection.query ('SELECT eposta FROM administratorji WHERE eposta = ?;',[eposta],function(err,results,fields) { //preveri če je e-pošta še neregistrirana
+		else connection.query ('SELECT eposta FROM administratorji WHERE eposta = ?;',[eposta],function(err,results,fields) {
 		if (err) {napake.push("Prišlo je do napake v podatkovni bazi, se opravičujemo.")};
 		if (results.length > 0) napake.push("Na en e-poštni naslov je lahko poslana samo ena prijava.");
 		if (napake.length) {response.render("./admin/login-register",{napake:napake})}
@@ -109,7 +109,6 @@ router.post('/poslji-potrditveno',function(request,response) {
 	let nadomestnoGeslo = passgen.generate(10);
 	let nadomestno_hash;
 
-	//set geslo to a random string of characters
 	bcrypt.hash(nadomestnoGeslo, 5, function(err, hash) {
 		if (err) response.send({uspelo:false});
 		else {
@@ -122,7 +121,6 @@ router.post('/poslji-potrditveno',function(request,response) {
 					connection.query("UPDATE administratorji SET geslo = ? WHERE eposta = ?;",[nadomestno_hash,request.body.eposta],function(err,results,fields) {
 						if (err) response.send({uspelo:false});
 						else {
-							//send the new geslo via email
 							D_mailObject.posljiGeslo(request.body.eposta,nadomestnoGeslo,connection,transporter);
 							response.send({uspelo:true});
 						};
