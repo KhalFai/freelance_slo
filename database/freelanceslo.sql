@@ -24,15 +24,15 @@ DROP TABLE IF EXISTS `administratorji`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `administratorji` (
   `idadmin` int NOT NULL AUTO_INCREMENT,
-  `eposta` varchar(30) DEFAULT NULL,
-  `geslo` varchar(75) DEFAULT NULL,
-  `ime` varchar(30) DEFAULT NULL,
-  `priimek` varchar(30) DEFAULT NULL,
+  `eposta` varchar(30) NOT NULL,
+  `geslo` varchar(75) NOT NULL,
+  `ime` varchar(30) NOT NULL,
+  `priimek` varchar(30) NOT NULL,
   `potrjen` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`idadmin`),
   UNIQUE KEY `idadmin` (`idadmin`),
   UNIQUE KEY `eposta` (`eposta`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `administratorji` (
 
 LOCK TABLES `administratorji` WRITE;
 /*!40000 ALTER TABLE `administratorji` DISABLE KEYS */;
-INSERT INTO `administratorji` VALUES (1,'esperswap@gmail.com','$2b$05$o5Emxfk1YlVp6OBQ6omuR.B497AsSM8XMZsfyyHoS9KTduuPjAHgG','Nekdo','Drug',1),(35,'janez.gradnik@gmail.com','$2b$05$nwCUGJFoBZ25ddDiDX7Ba.YUxYiFzXLcD9xPdgI4lpz/yf2b0ssm.','Janez','Gradnik',1),(36,'mail.mail@gmail.com','$2b$05$Iw4kUs3MNU/q1mphW7cTVueFbK.3qvS2amUTux6ZNULfJCfYd6jli','Asdf','Asdf',NULL);
+INSERT INTO `administratorji` VALUES (37,'admin.admin@admin.admin','$2b$05$ZEvLb9lFfK/SQEdWEdkRZ.JAl6FfZ3pRw5P9hr8zbPHC9rNhPKHD6','Peter','Foreman',1),(38,'janez.gradnik@freelanceslo.com','$2b$05$H2El.kZ0EItOoAvmIX96B.l52LX3.UIZPzrddLExgRCJbPnQ/ywWa','Janez','Gradnik',NULL),(39,'lili.marlen@gmail.com','$2b$05$5EmytS7B0Egtk.OgTP5rL.i7WHSkUc1QfFkyRCvMV.A6p27UMaJ12','Lili','Marlen',NULL),(40,'andre.veridi@gmail.com','$2b$05$Ei7L7MMMT6zhQFrvIp.d1OF2dfVq60hzOrHZYHPxVKitkgg8nCa6G','Andre','Veridi',NULL),(41,'dummy.register@dummy.com','$2b$05$qM3LmRy2DvrBoHX1MxVRK.10.UKfaq71X3rrnhF4eTYcWajfq7Cji','Dummy','Register',NULL);
 /*!40000 ALTER TABLE `administratorji` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +56,7 @@ CREATE TABLE `administratorji_eposta_blacklist` (
   `idnaslova` int unsigned NOT NULL AUTO_INCREMENT,
   `naslov` varchar(45) NOT NULL,
   PRIMARY KEY (`idnaslova`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,6 @@ CREATE TABLE `administratorji_eposta_blacklist` (
 
 LOCK TABLES `administratorji_eposta_blacklist` WRITE;
 /*!40000 ALTER TABLE `administratorji_eposta_blacklist` DISABLE KEYS */;
-INSERT INTO `administratorji_eposta_blacklist` VALUES (1,'marko.tomsic@gmail.com'),(2,'nek.email@neki.email');
 /*!40000 ALTER TABLE `administratorji_eposta_blacklist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,8 +83,8 @@ CREATE TABLE `dela` (
   `idplace` int NOT NULL,
   `idtrajanja` int NOT NULL,
   `iddelovnika` int NOT NULL,
-  `naziv` varchar(50) DEFAULT NULL,
-  `opis` varchar(1000) DEFAULT NULL,
+  `naziv` varchar(50) NOT NULL,
+  `opis` varchar(1000) NOT NULL,
   `placa` float NOT NULL,
   `opozorjen` tinyint(1) DEFAULT NULL,
   `pojasnilo_admina` varchar(500) DEFAULT NULL,
@@ -103,7 +102,7 @@ CREATE TABLE `dela` (
   CONSTRAINT `dela_ibfk_4` FOREIGN KEY (`idplace`) REFERENCES `vrste_plac` (`idplace`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dela_ibfk_5` FOREIGN KEY (`idtrajanja`) REFERENCES `trajanje` (`idtrajanja`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dela_ibfk_6` FOREIGN KEY (`iddelovnika`) REFERENCES `delovnik` (`iddelovnika`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=329 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=358 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +111,7 @@ CREATE TABLE `dela` (
 
 LOCK TABLES `dela` WRITE;
 /*!40000 ALTER TABLE `dela` DISABLE KEYS */;
-INSERT INTO `dela` VALUES (326,16,0,2,1,1,1,'Programer','Nek opis.',90,NULL,NULL),(327,16,0,2,1,1,1,'Programer 2','Nek opis.',90,NULL,NULL),(328,16,0,2,1,1,1,'Programer 3','Nek opis.',90,1,'vasdf');
+INSERT INTO `dela` VALUES (345,19,0,1,2,1,1,'Neprimerno delo','Delo s premajhno plačo.',1,NULL,NULL),(346,19,0,1,1,2,1,'Delo, ki ne ustreza pravilom platforme.','Neprimerna vsebina.',3,NULL,NULL),(347,19,0,1,1,2,1,'Delo, ki nima primerne vsebine','Grozovito neprimerno.',4,NULL,NULL),(348,20,0,2,1,1,1,'Delo neprimernega podjetja.','Delo, katerega avtor je neprimerno podjetje.',5.5,NULL,NULL),(349,20,0,5,1,1,1,'Delo, ki ima neprimernega avtorja.','Neprimerno delo.',20,NULL,NULL),(350,18,0,2,1,1,1,'JavaScript razvijalec','Iščemo razvijalca, ki bi pomagal pri vzpostavitvi nove različice FreelanceSLO. Zahtevamo15 let izkušenj z ogrodjem Angular, naklonjenost k ekipnemu delu in aktiven GitHub profil.',0.05,NULL,NULL),(351,18,2,2,1,3,3,'Urednik podatkovne baze','Iščemo urejevalca podatkovne baze, ki bi pomagal vzpostaviti podatkovni sistem za aplikacijo FreelanceSLO.',4,NULL,NULL),(352,21,0,5,1,1,1,'Medicinska sestra','Iščemo medicinsko sestro, ki bi pomagala pri oskrbi pacientov.',6,NULL,NULL),(353,21,0,5,1,1,1,'Vnašalec medicinskih zapisov','Iščemo vestnega študenta, ki bi pomagal pri vnašanju podatkov o bolnikih.',13,NULL,NULL),(354,22,0,5,2,1,1,'Izvajalec eksperimentov','Med naloge zaposlenega bi spadalo izvajanje eksperimentov na mikrokulturah.',4,NULL,NULL),(355,23,0,8,1,1,1,'Strokovnjaka v razvoju naprav','Iščemo izkušenega izumitelja, ki bi pomagal pri razvoju naprav.',5,NULL,NULL),(356,24,0,14,1,1,1,'Raziskovalec','Iščemo izkušenega raziskovalca, ki bi prispeval k razvoju orbitalnih satelitov.',13,NULL,NULL),(357,25,0,1,1,1,1,'Organizatorja poroke','Iščem nekoga, ki bi organiziral mojo poroko.',2,NULL,NULL);
 /*!40000 ALTER TABLE `dela` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -128,8 +127,8 @@ CREATE TABLE `dela_has_spretnosti` (
   `idspretnosti` int NOT NULL,
   KEY `dela_has_spretnosti_ibfk_1` (`iddela`),
   KEY `dela_has_spretnosti_ibfk_2` (`idspretnosti`),
-  CONSTRAINT `dela_has_spretnosti_ibfk_1` FOREIGN KEY (`iddela`) REFERENCES `dela` (`iddela`) ON DELETE CASCADE,
-  CONSTRAINT `dela_has_spretnosti_ibfk_2` FOREIGN KEY (`idspretnosti`) REFERENCES `spretnosti` (`idspretnosti`) ON DELETE CASCADE
+  CONSTRAINT `dela_has_spretnosti_ibfk_1` FOREIGN KEY (`iddela`) REFERENCES `dela` (`iddela`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `dela_has_spretnosti_ibfk_2` FOREIGN KEY (`idspretnosti`) REFERENCES `spretnosti` (`idspretnosti`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -139,7 +138,7 @@ CREATE TABLE `dela_has_spretnosti` (
 
 LOCK TABLES `dela_has_spretnosti` WRITE;
 /*!40000 ALTER TABLE `dela_has_spretnosti` DISABLE KEYS */;
-INSERT INTO `dela_has_spretnosti` VALUES (326,0),(326,4),(326,5),(327,0),(327,4),(327,5),(328,0),(328,4),(328,5);
+INSERT INTO `dela_has_spretnosti` VALUES (345,20),(346,20),(347,20),(348,0),(348,4),(348,5),(349,15),(350,5),(353,20),(352,20),(354,20),(355,20),(356,20),(357,20),(351,0),(351,4);
 /*!40000 ALTER TABLE `dela_has_spretnosti` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +167,7 @@ CREATE TABLE `dela_opozorila` (
 
 LOCK TABLES `dela_opozorila` WRITE;
 /*!40000 ALTER TABLE `dela_opozorila` DISABLE KEYS */;
-INSERT INTO `dela_opozorila` VALUES (328,'poafiweopfiwoepfip',120);
+INSERT INTO `dela_opozorila` VALUES (346,'Delo ni primerno.',122),(347,'Delo je sila neprimerno.',122);
 /*!40000 ALTER TABLE `dela_opozorila` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,7 +181,7 @@ DROP TABLE IF EXISTS `dela_prijave`;
 CREATE TABLE `dela_prijave` (
   `iddelavca` int NOT NULL,
   `iddela` int NOT NULL,
-  `opis` varchar(1000) DEFAULT NULL,
+  `opis` varchar(1000) NOT NULL,
   `sprejet` tinyint(1) DEFAULT NULL,
   KEY `dela_prijave_ibfk_1` (`iddelavca`),
   KEY `dela_prijave_ibfk_2` (`iddela`),
@@ -197,6 +196,7 @@ CREATE TABLE `dela_prijave` (
 
 LOCK TABLES `dela_prijave` WRITE;
 /*!40000 ALTER TABLE `dela_prijave` DISABLE KEYS */;
+INSERT INTO `dela_prijave` VALUES (123,353,'Sem dober v izvedbi medicinskih postopkov.',NULL),(123,352,'Imam dolga leta izkušenj na področju.',NULL);
 /*!40000 ALTER TABLE `dela_prijave` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,7 +222,7 @@ CREATE TABLE `delavci` (
   `admin_pojasnilo` varchar(500) DEFAULT NULL,
   `odgovor_delavca` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`iddelavca`)
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +231,7 @@ CREATE TABLE `delavci` (
 
 LOCK TABLES `delavci` WRITE;
 /*!40000 ALTER TABLE `delavci` DISABLE KEYS */;
-INSERT INTO `delavci` VALUES (100,'esperswap@gmail.com','$2b$05$Ou8v1NWwgVcg5Jq7iH6Xt.kauBP0lHRLxCl8KVZs3fUCoSsoRdFNu','Nekdo','Žužek','4063',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(108,'gla.nojaf@gmail.com','$2b$05$bWJ2LbxRiftXXZDzSVKKhu3ZOtbumMOgW/x1X4tJ1rJ421t9nsBUy','Gal','Fajon','3755',1,NULL,NULL,NULL,NULL,NULL,NULL),(116,'danijeldragojevic@gmail.com','$2b$05$kvhAoAfwZ5VxnYVkIbTv2eb3yQGOvgpae92BNFSuWmvaQ2tbeU.GW','Daniel','Dragojevič','8045',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(117,'nekmail@gmail.com','$2b$05$2cMD.T.6IbKpX79MqKy.ZucJ8Bv/5i/5.gfZaVWhFmxT2Be8GSAna','Matic','Podpadec','7114',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(118,'nek.delavec@gmail.com','$2b$05$56TKqmXiejoJTercfUg6ZOCMBDRCeTnOzlS8JpTsz5rfV/k8CkNp2','Nek','Delavec','5611',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(119,'marko.zuzek@gmail.com','$2b$05$zhr/KF.jZ1d4rx68Z1mq8OH7hXRBgMczSK9whWKCIS5uJniPbzNAK','Marko','Žužek','8157',NULL,NULL,NULL,'Sem lep in priden fant.',NULL,NULL,NULL),(120,'z.mihec@gmail.com','$2b$05$ESRBtOzgSJ1ifsQUj06V7.bwBEzusdAGNi5HmQ4IJVGWzv5y/Rdd.','Ian','Zobec','2075',1,NULL,NULL,'<>',1,'asdfawefwaewefwef','Asdfsdfds');
+INSERT INTO `delavci` VALUES (121,'marko.scurek@gmail.com','$2b$05$dR50v.vqrMiP6Nqfl5e6XOGM9N2c5FHAkvxxs1wIgoGbmNsEuf2.W','Marko','Ščurek','2718',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(122,'daniel.dergant@gmail.com','$2b$05$BgtpngLQ7k7bt09ILD6GkOLwIegq3/vRYBkQ4mDkGaxTo0wLBchPu','Daniel','Dergant','5105',NULL,NULL,NULL,NULL,NULL,NULL,NULL),(123,'zlobko.zlobec@gmail.com','$2b$05$lEAn20.qdno0ws93jEYcLu8DtcrRCIRd19KTt.V/SJLKjB78vQzAW','Zlobko','Zlobec','8100',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `delavci` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -244,7 +244,7 @@ DROP TABLE IF EXISTS `delavci_eposta_blacklist`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `delavci_eposta_blacklist` (
   `idnaslova` int NOT NULL AUTO_INCREMENT,
-  `eposta` varchar(40) DEFAULT NULL,
+  `eposta` varchar(40) NOT NULL,
   PRIMARY KEY (`idnaslova`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -255,7 +255,6 @@ CREATE TABLE `delavci_eposta_blacklist` (
 
 LOCK TABLES `delavci_eposta_blacklist` WRITE;
 /*!40000 ALTER TABLE `delavci_eposta_blacklist` DISABLE KEYS */;
-INSERT INTO `delavci_eposta_blacklist` VALUES (1,'marko.marko@marko.marko'),(2,'gal.fajon@gmail.com'),(3,'freelanceslopotrditev@gmail.com');
 /*!40000 ALTER TABLE `delavci_eposta_blacklist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -282,7 +281,7 @@ CREATE TABLE `delavci_has_jezik` (
 
 LOCK TABLES `delavci_has_jezik` WRITE;
 /*!40000 ALTER TABLE `delavci_has_jezik` DISABLE KEYS */;
-INSERT INTO `delavci_has_jezik` VALUES (100,1),(108,1),(100,0),(108,0),(117,0),(117,1),(119,0),(119,1),(120,1),(120,0);
+INSERT INTO `delavci_has_jezik` VALUES (121,0),(122,1),(122,0),(123,1),(123,0);
 /*!40000 ALTER TABLE `delavci_has_jezik` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -309,7 +308,7 @@ CREATE TABLE `delavci_has_spretnosti` (
 
 LOCK TABLES `delavci_has_spretnosti` WRITE;
 /*!40000 ALTER TABLE `delavci_has_spretnosti` DISABLE KEYS */;
-INSERT INTO `delavci_has_spretnosti` VALUES (100,0),(108,0),(108,4),(117,10),(119,0),(119,4),(119,5),(119,10),(120,5),(120,0),(120,4);
+INSERT INTO `delavci_has_spretnosti` VALUES (121,0),(121,4),(121,5),(122,20),(123,20);
 /*!40000 ALTER TABLE `delavci_has_spretnosti` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -337,7 +336,6 @@ CREATE TABLE `delavci_opozorila` (
 
 LOCK TABLES `delavci_opozorila` WRITE;
 /*!40000 ALTER TABLE `delavci_opozorila` DISABLE KEYS */;
-INSERT INTO `delavci_opozorila` VALUES (120,'poafwiefopew',16);
 /*!40000 ALTER TABLE `delavci_opozorila` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,7 +358,7 @@ CREATE TABLE `delovneizkusnje` (
   UNIQUE KEY `iddelovneizkusnje` (`iddelovneizkusnje`),
   KEY `delovneizkusnje_ibfk_1` (`iddelavca`),
   CONSTRAINT `delovneizkusnje_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -369,7 +367,7 @@ CREATE TABLE `delovneizkusnje` (
 
 LOCK TABLES `delovneizkusnje` WRITE;
 /*!40000 ALTER TABLE `delovneizkusnje` DISABLE KEYS */;
-INSERT INTO `delovneizkusnje` VALUES (63,100,'ASDF','ADSF','2021-01-13','2021-01-16','SSDFG'),(141,119,'Podjetjeime','Strokovnjak','2021-03-02','2021-03-04','Delu sm neki.');
+INSERT INTO `delovneizkusnje` VALUES (144,123,'Neprimerna','Delovna izkušnja','2021-03-02','2021-03-04','Delovna izkušnja z neprimerno vsebino.'),(146,122,'Podjetje d.d.','Medinski poklic.','2021-03-01','2021-03-03','Opravljal sem delo medicinske sestre.');
 /*!40000 ALTER TABLE `delovneizkusnje` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -382,7 +380,7 @@ DROP TABLE IF EXISTS `delovnik`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `delovnik` (
   `iddelovnika` int NOT NULL AUTO_INCREMENT,
-  `naziv` varchar(40) DEFAULT NULL,
+  `naziv` varchar(40) NOT NULL,
   PRIMARY KEY (`iddelovnika`),
   UNIQUE KEY `iddelovnika` (`iddelovnika`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -413,15 +411,14 @@ CREATE TABLE `izobrazba` (
   `idnivoja` int NOT NULL,
   `datumzacetka` date NOT NULL,
   `datumkonca` date NOT NULL,
-  `opis` varchar(500) DEFAULT NULL,
-  `izobrazbacol` varchar(45) DEFAULT NULL,
+  `opis` varchar(500) NOT NULL,
   PRIMARY KEY (`idizobrazbe`),
   UNIQUE KEY `idizobrazbe` (`idizobrazbe`),
   KEY `izobrazba_ibfk_2` (`idnivoja`),
   KEY `izobrazba_ibfk_1` (`iddelavca`),
   CONSTRAINT `izobrazba_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `izobrazba_ibfk_2` FOREIGN KEY (`idnivoja`) REFERENCES `nivojiizobrazbe` (`idnivoja`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=345 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -430,7 +427,7 @@ CREATE TABLE `izobrazba` (
 
 LOCK TABLES `izobrazba` WRITE;
 /*!40000 ALTER TABLE `izobrazba` DISABLE KEYS */;
-INSERT INTO `izobrazba` VALUES (262,100,'Nižji poklic','Inštitut nižjih poklicov',0,'2021-01-14','2021-01-16','Nekaj...',NULL),(343,117,'asd','asd',0,'2021-03-01','2021-03-03','Asdf.',NULL),(344,119,'Tehnik Računalništva','Vegova',2,'2021-03-01','2021-03-03','Neki sm se pa nauču :).',NULL);
+INSERT INTO `izobrazba` VALUES (345,121,'Spletni razvijalec','Akademija za spletni razvoj',0,'2021-03-01','2021-03-03','Razvoj spletnih aplikacij.'),(348,123,'Neprimerno','Izobraževanje',0,'2021-03-01','2021-03-03','Izobraževanje z neprimerno vsebino.'),(350,122,'Medicinska','Izobrazba',0,'2021-03-01','2021-03-03','Izobraževal sem se o medicini.');
 /*!40000 ALTER TABLE `izobrazba` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -493,7 +490,7 @@ DROP TABLE IF EXISTS `podjetja_eposta_blacklist`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `podjetja_eposta_blacklist` (
   `idnaslova` int NOT NULL AUTO_INCREMENT,
-  `naslov` varchar(50) DEFAULT NULL,
+  `naslov` varchar(50) NOT NULL,
   UNIQUE KEY `idnaslova` (`idnaslova`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -504,7 +501,6 @@ CREATE TABLE `podjetja_eposta_blacklist` (
 
 LOCK TABLES `podjetja_eposta_blacklist` WRITE;
 /*!40000 ALTER TABLE `podjetja_eposta_blacklist` DISABLE KEYS */;
-INSERT INTO `podjetja_eposta_blacklist` VALUES (1,'esperswap@gmail.com'),(2,'gla.nojaf@gmail.com'),(3,'nek.mail@nekmail.si');
 /*!40000 ALTER TABLE `podjetja_eposta_blacklist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -533,7 +529,7 @@ CREATE TABLE `podjetja_opozorila` (
 
 LOCK TABLES `podjetja_opozorila` WRITE;
 /*!40000 ALTER TABLE `podjetja_opozorila` DISABLE KEYS */;
-INSERT INTO `podjetja_opozorila` VALUES (16,'awefiwiaopifopwief',120);
+INSERT INTO `podjetja_opozorila` VALUES (19,'Podjetje je neprimerno.',122);
 /*!40000 ALTER TABLE `podjetja_opozorila` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -568,7 +564,7 @@ CREATE TABLE `podjetje` (
   CONSTRAINT `podjetje_ibfk_1` FOREIGN KEY (`idvrste`) REFERENCES `vrstepodjetji` (`idvrste`),
   CONSTRAINT `podrocje` FOREIGN KEY (`podrocje`) REFERENCES `podrocjapodjetji` (`idpodrocja`),
   CONSTRAINT `velikost` FOREIGN KEY (`velikost`) REFERENCES `velikostipodjetji` (`idvelikosti`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -577,7 +573,7 @@ CREATE TABLE `podjetje` (
 
 LOCK TABLES `podjetje` WRITE;
 /*!40000 ALTER TABLE `podjetje` DISABLE KEYS */;
-INSERT INTO `podjetje` VALUES (15,'Podjetje',6,NULL,'nek.mail2@gmail.com',NULL,NULL,NULL,NULL,'$2b$05$moqbYEX5ADnRNNuIQRDKC.2WpmBCKJciX5fYHTjDM3jHfFz.LIYpG','8070',NULL,NULL,NULL,NULL),(16,'Podjetje',6,NULL,'podjetje.podjetje@gmail.com',NULL,NULL,NULL,NULL,'$2b$05$KBy/8bQRrhgs/HbB0rXQYOVmvtKyeBRqfNilGUiGNC4gf6XFHtFcG','6289',NULL,NULL,NULL,NULL);
+INSERT INTO `podjetje` VALUES (18,'FreelanceSLO',5,'Cesta Andreja Bitenca 31','freelanceslo@gmail.com','131-406-555',1,'2021-03-05',2,'$2b$05$lI4hYMtac9Zx9W1XqjSRJ.xEjyYwTHhzXYsHi0w1wB50zdupvO50u','1730',NULL,NULL,NULL,NULL),(19,'Neprimerno',4,'Naslov podjetja','neprimerno.doo@gmail.com','000-131-131',3,'2021-03-04',1,'$2b$05$O4znrRIUumYTlsvET.qHUuut5oVibfd4yA99psRKLFqaq9M/gXJdG','5220',NULL,NULL,NULL,NULL),(20,'Opozorjen',7,NULL,'opozorjeni.dno@gmail.com',NULL,NULL,NULL,NULL,'$2b$05$GbIFWFTTMOcpX7Xg4Epb.u641SMKfeA4QxElVmzf5hmWaIpZfvFHa','2685',NULL,NULL,NULL,NULL),(21,'Farmatech',6,NULL,'farmatech.dd@gmail.com',NULL,NULL,NULL,NULL,'$2b$05$N4SWbk/xlTASZl/niW5OuOXGmvlHxaJJ8IA44pBsd5gH1nDHeoLPy','3225',NULL,NULL,NULL,NULL),(22,'Biotek',8,NULL,'biotek.carbon@gmail.com',NULL,NULL,NULL,NULL,'$2b$05$kWiW6y3fEHwUuGRGTB/t4udJL6KflAzDD8wQuLsq87xLWRfIB47f.','2914',NULL,NULL,NULL,NULL),(23,'Acme',4,'Gradbeniška ulica 32','acme.doo@gmail.com','123-123-123',2,'2021-03-01',14,'$2b$05$Jj7S6uY9a0RKN0i7yikLX.KkiMq0OysAeKOEElAxRgpYCiTdrZFIG','7029',NULL,NULL,NULL,NULL),(24,'WeylandYutani',6,'Space street 1','weyland.yutani@gmail.com','123-123-123',2,'2021-03-03',14,'$2b$05$X3HBHgigTHPxeIt34s7A9e1O5j04.ZypSfAb1jkqS8qVq1CYwjcVO','4215',NULL,NULL,NULL,NULL),(25,'Hinko Verdan',9,'Ulica 2','hinko.verdan@gmail.com','123-123-123',1,'2021-03-02',1,'$2b$05$Rnakycl70IIz1BNlEDH7IOGkmKl4jvMUiiVJbrcxlmAhnLGWBx3QO','3124',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `podjetje` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -741,4 +737,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-08 19:54:10
+-- Dump completed on 2021-03-31 15:29:13
