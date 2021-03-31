@@ -3,7 +3,7 @@ A web application for freelance workers in Slovenia.
 
 ## Requirements:
 - Node.js runtime.
-- Oracle MySQL Server 8.0 or older distributions.
+- Oracle MySQL Server 8.0 or older distribution.
 
 ## Installation:
 1. Import the database inside the database folder (freelance_slo.sql) into your installation of MySQL.
@@ -12,3 +12,7 @@ A web application for freelance workers in Slovenia.
 4. Run the main app file using theh command "node app.js".
 5. Open a browser of your choice on the address "localhost:3000".
 6. Begin using the project.
+
+## Additional info:
+- The password to any of the company/worker/admin accounts is "Geslo1231."
+- The head administrator account used to accept other administrators is "admin.admin@admin.admin"
