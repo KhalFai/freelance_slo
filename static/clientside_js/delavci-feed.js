@@ -221,7 +221,7 @@ function isci() {
             podjetjeButton.setAttribute("data-toggle","modal");
             podjetjeButton.setAttribute("data-target","#podjetje-modal");
             podjetjeButton.value = delo.idpodjetja;
-            podjetjeButton.onClick = podjetjePodatki({value:delo.idpodjetja});
+            podjetjeButton.setAttribute('onclick','podjetjePodatki(this)');
             podjetjeButton.innerText = "Podatki o podjetju";
 
             let prijavaButton = document.createElement("button");
@@ -640,7 +640,7 @@ function delaSprejet(item) {
             podjetjeButton.setAttribute("data-toggle","modal");
             podjetjeButton.setAttribute("data-target","#podjetje-modal");
             podjetjeButton.value = delo.idpodjetja;
-            podjetjeButton.onClick = podjetjePodatki({value:delo.idpodjetja});
+            podjetjeButton.setAttribute('onclick','podjetjePodatki(this)');
             podjetjeButton.innerText = "Podatki o podjetju";
 
             deloCard.appendChild(podjetjeButton);
@@ -655,7 +655,6 @@ function delaSprejet(item) {
 
 function podjetjePodatki(item) {
     let status = document.getElementById("status");
-
     getData("/delavci/dela/podatki-podjetje/"+item.value,{}).then((response) => {
         if (response.uspelo == false) {
             openStatus(status,"Napaka na strežniku","alert-danger");

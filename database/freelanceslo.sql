@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `administratorji`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `administratorji` (
   `idadmin` int NOT NULL AUTO_INCREMENT,
   `eposta` varchar(30) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE `administratorji` (
   PRIMARY KEY (`idadmin`),
   UNIQUE KEY `idadmin` (`idadmin`),
   UNIQUE KEY `eposta` (`eposta`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,12 +51,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `administratorji_eposta_blacklist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `administratorji_eposta_blacklist` (
   `idnaslova` int unsigned NOT NULL AUTO_INCREMENT,
   `naslov` varchar(45) NOT NULL,
   PRIMARY KEY (`idnaslova`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,7 +74,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dela`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `dela` (
   `iddela` int NOT NULL AUTO_INCREMENT,
   `idpodjetja` int NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE `dela` (
   CONSTRAINT `dela_ibfk_4` FOREIGN KEY (`idplace`) REFERENCES `vrste_plac` (`idplace`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dela_ibfk_5` FOREIGN KEY (`idtrajanja`) REFERENCES `trajanje` (`idtrajanja`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dela_ibfk_6` FOREIGN KEY (`iddelovnika`) REFERENCES `delovnik` (`iddelovnika`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=358 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=358 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +121,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dela_has_spretnosti`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `dela_has_spretnosti` (
   `iddela` int NOT NULL,
   `idspretnosti` int NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE `dela_has_spretnosti` (
   KEY `dela_has_spretnosti_ibfk_2` (`idspretnosti`),
   CONSTRAINT `dela_has_spretnosti_ibfk_1` FOREIGN KEY (`iddela`) REFERENCES `dela` (`iddela`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dela_has_spretnosti_ibfk_2` FOREIGN KEY (`idspretnosti`) REFERENCES `spretnosti` (`idspretnosti`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +148,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dela_opozorila`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `dela_opozorila` (
   `iddela` int NOT NULL,
   `besedilo_prijave` varchar(500) NOT NULL,
@@ -158,7 +158,7 @@ CREATE TABLE `dela_opozorila` (
   KEY `iddelavca_idx` (`iddelavca`),
   CONSTRAINT `iddela` FOREIGN KEY (`iddela`) REFERENCES `dela` (`iddela`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `iddelavca` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +177,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `dela_prijave`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `dela_prijave` (
   `iddelavca` int NOT NULL,
   `iddela` int NOT NULL,
@@ -187,7 +187,7 @@ CREATE TABLE `dela_prijave` (
   KEY `dela_prijave_ibfk_2` (`iddela`),
   CONSTRAINT `dela_prijave_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dela_prijave_ibfk_2` FOREIGN KEY (`iddela`) REFERENCES `dela` (`iddela`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +206,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delavci`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delavci` (
   `iddelavca` int NOT NULL AUTO_INCREMENT,
   `eposta` varchar(50) NOT NULL,
@@ -222,7 +222,7 @@ CREATE TABLE `delavci` (
   `admin_pojasnilo` varchar(500) DEFAULT NULL,
   `odgovor_delavca` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`iddelavca`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,12 +241,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delavci_eposta_blacklist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delavci_eposta_blacklist` (
   `idnaslova` int NOT NULL AUTO_INCREMENT,
   `eposta` varchar(40) NOT NULL,
   PRIMARY KEY (`idnaslova`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,7 +264,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delavci_has_jezik`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delavci_has_jezik` (
   `iddelavca` int NOT NULL,
   `idjezika` int NOT NULL,
@@ -272,7 +272,7 @@ CREATE TABLE `delavci_has_jezik` (
   KEY `delavci_has_jezik_ibfk_2` (`idjezika`),
   CONSTRAINT `delavci_has_jezik_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `delavci_has_jezik_ibfk_2` FOREIGN KEY (`idjezika`) REFERENCES `jeziki` (`idjezika`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -291,7 +291,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delavci_has_spretnosti`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delavci_has_spretnosti` (
   `iddelavca` int NOT NULL,
   `idspretnosti` int NOT NULL,
@@ -299,7 +299,7 @@ CREATE TABLE `delavci_has_spretnosti` (
   KEY `delavci_has_spretnosti_ibfk_2` (`idspretnosti`),
   CONSTRAINT `delavci_has_spretnosti_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `delavci_has_spretnosti_ibfk_2` FOREIGN KEY (`idspretnosti`) REFERENCES `spretnosti` (`idspretnosti`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delavci_opozorila`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delavci_opozorila` (
   `iddelavca` int NOT NULL,
   `besedilo_prijave` varchar(500) NOT NULL,
@@ -327,7 +327,7 @@ CREATE TABLE `delavci_opozorila` (
   KEY `delavci_opozorila_ibfk_1` (`idpodjetja`),
   CONSTRAINT `delavci_opozorila_ibfk_1` FOREIGN KEY (`idpodjetja`) REFERENCES `podjetje` (`idpodjetja`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `delavci_opozorila_ibfk_2` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -345,7 +345,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delovneizkusnje`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delovneizkusnje` (
   `iddelovneizkusnje` int NOT NULL AUTO_INCREMENT,
   `iddelavca` int NOT NULL,
@@ -358,7 +358,7 @@ CREATE TABLE `delovneizkusnje` (
   UNIQUE KEY `iddelovneizkusnje` (`iddelovneizkusnje`),
   KEY `delovneizkusnje_ibfk_1` (`iddelavca`),
   CONSTRAINT `delovneizkusnje_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -377,13 +377,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `delovnik`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `delovnik` (
   `iddelovnika` int NOT NULL AUTO_INCREMENT,
   `naziv` varchar(40) NOT NULL,
   PRIMARY KEY (`iddelovnika`),
   UNIQUE KEY `iddelovnika` (`iddelovnika`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -402,7 +402,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `izobrazba`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `izobrazba` (
   `idizobrazbe` int NOT NULL AUTO_INCREMENT,
   `iddelavca` int NOT NULL,
@@ -418,7 +418,7 @@ CREATE TABLE `izobrazba` (
   KEY `izobrazba_ibfk_1` (`iddelavca`),
   CONSTRAINT `izobrazba_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `izobrazba_ibfk_2` FOREIGN KEY (`idnivoja`) REFERENCES `nivojiizobrazbe` (`idnivoja`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -437,13 +437,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `jeziki`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `jeziki` (
   `idjezika` int NOT NULL,
   `naziv` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`idjezika`),
   UNIQUE KEY `idjezika` (`idjezika`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -462,13 +462,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `nivojiizobrazbe`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `nivojiizobrazbe` (
   `idnivoja` int NOT NULL,
   `naziv` varchar(100) NOT NULL,
   PRIMARY KEY (`idnivoja`),
   UNIQUE KEY `idnivoja` (`idnivoja`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -487,12 +487,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `podjetja_eposta_blacklist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `podjetja_eposta_blacklist` (
   `idnaslova` int NOT NULL AUTO_INCREMENT,
   `naslov` varchar(50) NOT NULL,
   UNIQUE KEY `idnaslova` (`idnaslova`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -510,7 +510,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `podjetja_opozorila`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `podjetja_opozorila` (
   `idpodjetja` int NOT NULL,
   `besedilo_prijave` varchar(500) NOT NULL,
@@ -520,7 +520,7 @@ CREATE TABLE `podjetja_opozorila` (
   KEY `podjetja_opozorila_ibfk_1` (`iddelavca`),
   CONSTRAINT `idpodjetja` FOREIGN KEY (`idpodjetja`) REFERENCES `podjetje` (`idpodjetja`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `podjetja_opozorila_ibfk_1` FOREIGN KEY (`iddelavca`) REFERENCES `delavci` (`iddelavca`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -539,7 +539,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `podjetje`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `podjetje` (
   `idpodjetja` int NOT NULL AUTO_INCREMENT,
   `naziv` varchar(50) NOT NULL,
@@ -564,7 +564,7 @@ CREATE TABLE `podjetje` (
   CONSTRAINT `podjetje_ibfk_1` FOREIGN KEY (`idvrste`) REFERENCES `vrstepodjetji` (`idvrste`),
   CONSTRAINT `podrocje` FOREIGN KEY (`podrocje`) REFERENCES `podrocjapodjetji` (`idpodrocja`),
   CONSTRAINT `velikost` FOREIGN KEY (`velikost`) REFERENCES `velikostipodjetji` (`idvelikosti`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -583,13 +583,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `podrocjapodjetji`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `podrocjapodjetji` (
   `idpodrocja` int NOT NULL AUTO_INCREMENT,
   `imepodrocja` varchar(30) NOT NULL,
   PRIMARY KEY (`idpodrocja`),
   UNIQUE KEY `imepodrocja_UNIQUE` (`imepodrocja`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -608,13 +608,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `spretnosti`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `spretnosti` (
   `idspretnosti` int NOT NULL,
   `naziv` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`idspretnosti`),
   UNIQUE KEY `idspretnosti` (`idspretnosti`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -633,13 +633,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `trajanje`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `trajanje` (
   `idtrajanja` int NOT NULL AUTO_INCREMENT,
   `naziv` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`idtrajanja`),
   UNIQUE KEY `idtrajanja` (`idtrajanja`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -658,13 +658,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `velikostipodjetji`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `velikostipodjetji` (
   `idvelikosti` int NOT NULL AUTO_INCREMENT,
   `velikost` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`idvelikosti`),
   UNIQUE KEY `idvelikosti` (`idvelikosti`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -683,13 +683,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vrste_plac`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `vrste_plac` (
   `idplace` int NOT NULL AUTO_INCREMENT,
   `naziv` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`idplace`),
   UNIQUE KEY `idplace` (`idplace`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -708,14 +708,14 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `vrstepodjetji`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!50503 SET character_set_client = utf8 */;
 CREATE TABLE `vrstepodjetji` (
   `idvrste` int NOT NULL AUTO_INCREMENT,
   `ime` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`idvrste`),
   UNIQUE KEY `idvrste` (`idvrste`),
   UNIQUE KEY `ime` (`ime`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_slovenian_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
