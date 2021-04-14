@@ -16,3 +16,6 @@ A web application for freelance workers in Slovenia.
 ## Additional info:
 - The password to any of the company/worker/admin accounts is "Geslo1231."
 - The head administrator account used to accept other administrators is "admin.admin@admin.admin"
+- The database contains example data and accounts with configurations that demonstrate the application's functionality.
+- Submitting an empty search in the job display allows you to view every job on the platform.
+- Jobs are sorted according to CVs (example: adding the 'SQL' and 'Grafično Oblikovanje' skills and a 2 year education makes jobs appear in the feed)
